@@ -28,16 +28,11 @@ public class User extends BaseAuditingEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String address;
-
-    @OneToMany
-    private List<Order> orders;
-
-    @OneToMany
-    private List<Store> stores;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role; // UserRole Enum을 사용
+
+    @Column(nullable = false)
+    private String address;
+
 }

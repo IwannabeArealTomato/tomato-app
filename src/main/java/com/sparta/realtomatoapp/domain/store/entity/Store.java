@@ -40,10 +40,4 @@ public class Store {
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
-
-    @OneToMany
-    private List<Menu> menus;
-
-    @OneToMany
-    private List<Order> orders;
 }
