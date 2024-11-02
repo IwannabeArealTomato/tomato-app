@@ -1,7 +1,7 @@
 package com.sparta.realtomatoapp.domain.order.entity;
 
-import com.sparta.realtomatoapp.domain.review.entity.Review;
-import com.sparta.realtomatoapp.Status;
+import com.sparta.realtomatoapp.domain.CreateAuditingEntity;
+import com.sparta.realtomatoapp.domain.order.service.Status;
 import com.sparta.realtomatoapp.domain.store.entity.Store;
 import com.sparta.realtomatoapp.domain.user.entity.User;
 import com.sparta.realtomatoapp.domain.menu.entity.Menu;
@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Builder
@@ -20,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "order")
-public class Order {
+public class Order extends CreateAuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,10 +30,8 @@ public class Order {
     private Status status;
 
     @Column(nullable = false)
-    private int amount;
+    private Integer amount;
 
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -47,7 +44,4 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "menuId")
     private Menu menu;
-
-    @OneToMany
-    private List<Review> reviews;
 }

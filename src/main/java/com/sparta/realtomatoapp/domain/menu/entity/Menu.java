@@ -25,7 +25,7 @@ public class Menu {
     private String menuName;
 
     @Column(nullable = false)
-    private int price;
+    private Integer price;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "storeId")

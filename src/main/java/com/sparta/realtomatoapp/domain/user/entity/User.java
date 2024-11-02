@@ -1,21 +1,20 @@
 package com.sparta.realtomatoapp.domain.user.entity;
 
+import com.sparta.realtomatoapp.domain.BaseAuditingEntity;
 import com.sparta.realtomatoapp.domain.order.entity.Order;
 import com.sparta.realtomatoapp.domain.store.entity.Store;
-import com.sparta.realtomatoapp.domain.user.common.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "user")
-public class User {
+public class User extends BaseAuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -31,12 +30,6 @@ public class User {
 
     @Column(nullable = false)
     private String address;
-
-    @Column(updatable = false)
-    private LocalDate createdAt;
-
-    @Column(updatable = false)
-    private LocalDate modifiedAt;
 
     @OneToMany
     private List<Order> orders;

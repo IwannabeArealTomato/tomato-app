@@ -1,21 +1,20 @@
 package com.sparta.realtomatoapp.domain.review.entity;
 
+import com.sparta.realtomatoapp.domain.CreateAuditingEntity;
 import com.sparta.realtomatoapp.domain.order.entity.Order;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Data
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "review")
-public class Review {
+public class Review extends CreateAuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
@@ -25,9 +24,6 @@ public class Review {
 
     @Column(nullable = false)
     private Integer scope;
-
-    @Column(nullable = false)
-    private LocalDate createdAt;
 
     @ManyToOne
     @JoinColumn(name = "orderId")
