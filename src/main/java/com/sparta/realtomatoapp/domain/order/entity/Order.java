@@ -24,7 +24,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long orderId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

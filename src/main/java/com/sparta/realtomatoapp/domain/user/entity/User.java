@@ -1,29 +1,26 @@
 package com.sparta.realtomatoapp.domain.user.entity;
 
-
 import com.sparta.realtomatoapp.domain.order.entity.Order;
 import com.sparta.realtomatoapp.domain.store.entity.Store;
+import com.sparta.realtomatoapp.domain.user.common.UserRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -31,9 +28,6 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private String role;
 
     @Column(nullable = false)
     private String address;
@@ -49,4 +43,8 @@ public class User {
 
     @OneToMany
     private List<Store> stores;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role; // UserRole Enum을 사용
 }
