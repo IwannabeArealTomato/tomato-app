@@ -1,0 +1,55 @@
+body {
+    background-color: #f5f8fa;
+    font-family: Arial, sans-serif;
+}
+
+.post-box, .post, .card {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 10px;
+}
+
+#newsFeed {
+    margin-top: 20px;
+}
+
+.post {
+    margin-top: 10px;
+}
+
+.post-content {
+    margin-bottom: 10px;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-like, .btn-comment, .btn-edit, .btn-delete {
+    color: #1da1f2;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.comment-section {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.comment {
+    margin-bottom: 5px;
+}
+
+.navbar {
+    margin-bottom: 0;
+    padding: 10px;
+}
+
+.container {
+    margin-top: 70px; /* Ensure content is below the fixed navbar */
+}

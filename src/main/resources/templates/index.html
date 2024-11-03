@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In & Sign Up</title>
+    <link rel="stylesheet" href="/static/css/styles01.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/boxicons/2.1.4/css/boxicons.min.css">
+</head>
+<body>
+<div id="container" class="container">
+    <!-- FORM SECTION -->
+    <div class="row">
+        <!-- SIGN UP -->
+        <div class="col align-items-center flex-col sign-up">
+            <div class="form-wrapper align-items-center">
+                <div class="form sign-up">
+                    <div class="input-group">
+                        <i class='bx bxs-user'></i>
+                        <input type="text" placeholder="닉네임">
+                    </div>
+                    <div class="input-group">
+                        <i class='bx bx-mail-send'></i>
+                        <input type="email" placeholder="이메일">
+                    </div>
+                    <div class="input-group">
+                        <i class='bx bxs-lock-alt'></i>
+                        <input type="password" placeholder="비밀번호">
+                    </div>
+                    <div class="input-group">
+                        <i class='bx bxs-lock-alt'></i>
+                        <input type="role" placeholder="사장 or 고객">
+                    </div>
+                    <button class="signup-button">
+                        회원가입
+                    </button>
+                    <button class="google-bg">
+                        <i class='bx bxl-google'></i> Google 로그인
+                    </button>
+                    <button class="kakao-bg">
+                        <i class='bx bxl-kakao-talk'></i> 카카오 로그인
+                    </button>
+                    <p>
+              <span>
+                이미 계정이 있으신가요?
+              </span>
+                        <b onclick="toggle()" class="pointer">
+                            로그인
+                        </b>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        <!-- END SIGN UP -->
+        <!-- SIGN IN -->
+        <div class="col align-items-center flex-col sign-in">
+            <div class="form-wrapper align-items-center">
+                <div class="form sign-in">
+                    <div class="input-group">
+                        <i class='bx bxs-user'></i>
+                        <input type="text" placeholder="이메일">
+                    </div>
+                    <div class="input-group">
+                        <i class='bx bxs-lock-alt'></i>
+                        <input type="password" placeholder="비밀번호">
+                    </div>
+                    <button class="signin-button">
+                        로그인
+                    </button>
+                    <button class="google-bg">
+                        <i class='bx bxl-google'></i> Google 로그인
+                    </button>
+                    <button class="kakao-bg">
+                        <i class='bx bxl-kakao-talk'></i> 카카오 로그인
+                    </button>
+                    <p>
+                        <b>
+                            비밀번호를 잊으셨나요? 다시 가입하세요!
+                        </b>
+                    </p>
+                    <p>
+              <span>
+                계정이 없으신가요?
+              </span>
+                        <b onclick="toggle()" class="pointer">
+                            회원가입
+                        </b>
+                    </p>
+                </div>
+            </div>
+            <div class="form-wrapper">
+
+            </div>
+        </div>
+        <!-- END SIGN IN -->
+    </div>
+    <!-- END FORM SECTION -->
+    <!-- CONTENT SECTION -->
+    <div class="row content-row">
+        <!-- SIGN IN CONTENT -->
+        <div class="col align-items-center flex-col">
+            <div class="text sign-in">
+                <h2>
+                    Welcome, :)
+                    <br>
+                    토마토고스트를 즐기세요!
+                </h2>
+
+            </div>
+            <div class="img sign-in">
+
+            </div>
+        </div>
+        <!-- END SIGN IN CONTENT -->
+        <!-- SIGN UP CONTENT -->
+        <div class="col align-items-center flex-col">
+            <div class="img sign-up">
+
+            </div>
+            <div class="text sign-up">
+                <h2>
+                    토마토고스트에 가입하기
+                </h2>
+
+            </div>
+        </div>
+        <!-- END SIGN UP CONTENT -->
+    </div>
+    <!-- END CONTENT SECTION -->
+</div>
+<script src="/static/js/index.js"></script>
+</body>
+</html>
