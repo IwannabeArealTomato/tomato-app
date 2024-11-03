@@ -22,12 +22,12 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginDto loginDto) {
         log.info("AuthController.login");
-        AuthInfo build = AuthInfo.builder()
+        AuthInfo authInfo = AuthInfo.builder()
                 .email(loginDto.getEmail())
                 .role(String.valueOf(UserRole.GUEST))
                 .build();
 
-        String jwtToken = jwtProvider.createJwtToken(build);
+        String jwtToken = jwtProvider.createJwtToken(authInfo);
         return jwtToken;
     }
 

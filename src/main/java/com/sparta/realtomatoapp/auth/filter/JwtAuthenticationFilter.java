@@ -33,12 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
         String token = null;
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            token = bearerToken.substring(7); // "Bearer "의 길이가 7이므로 그 뒤의 문자열을 반환
+            token =bearerToken.substring("Bearer ".length()); // "Bearer "의 길이가 7이므로 그 뒤의 문자열을 반환
         }
 
         if (!jwtProvider.verifyAccessToken(token)) {
             // 사용자에 잘못된 값 json으로 날림
-            unAuthRespons(response);
+            unAuthResponse(response);
             return;
         }
 
@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //3. 권한 검증 ==>AOP 처리?
     }
 
-    private void unAuthRespons(HttpServletResponse response) throws IOException {
+    private void unAuthResponse(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
         response.setContentType("application/json"); // 응답 타입을 JSON으로 설정
         response.setCharacterEncoding("UTF-8");
