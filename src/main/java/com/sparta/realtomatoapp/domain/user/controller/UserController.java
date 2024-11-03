@@ -3,7 +3,7 @@ package com.sparta.realtomatoapp.domain.user.controller;
 import com.sparta.realtomatoapp.domain.user.dto.LoginRequestDTO;
 import com.sparta.realtomatoapp.domain.user.dto.SignupRequestDTO;
 import com.sparta.realtomatoapp.jwt.dto.TokenResponseDTO;
-import com.sparta.realtomatoapp.domain.user.service.AuthService;
+import com.sparta.realtomatoapp.domain.user.service.LoginService;
 import com.sparta.realtomatoapp.domain.user.service.SignupService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class UserController {
 
-    private final AuthService authService;
+    private final LoginService loginService;
     private final SignupService signupService;
 
-    public UserController(AuthService authService, SignupService signupService) {
-        this.authService = authService;
+    public UserController(LoginService loginService, SignupService signupService) {
+        this.loginService = loginService;
         this.signupService = signupService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
-        TokenResponseDTO tokenResponse = authService.login(loginRequest);
+        TokenResponseDTO tokenResponse = loginService.login(loginRequest);
         if (tokenResponse != null) {
             return ResponseEntity.ok(tokenResponse);  // 로그인 성공 시 토큰 정보 반환
         } else {
@@ -33,7 +33,7 @@ public class UserController {
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestHeader("RefreshToken") String oldRefreshToken) {
-        TokenResponseDTO tokenResponse = authService.refreshToken(oldRefreshToken);
+        TokenResponseDTO tokenResponse = loginService.refreshToken(oldRefreshToken);
         if (tokenResponse != null) {
             return ResponseEntity.ok(tokenResponse);  // 토큰 갱신 성공 시 새로운 토큰 반환
         } else {
