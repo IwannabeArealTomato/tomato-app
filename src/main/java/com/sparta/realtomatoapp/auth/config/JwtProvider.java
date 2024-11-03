@@ -1,5 +1,6 @@
 package com.sparta.realtomatoapp.auth.config;
 
+import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,11 @@ public class JwtProvider {
 
     private final JwtConfig jwtConfig;
 
-    //JWT 생성 및 검증을 담당
-    public String creatJwtToken(String email, String role) {
+    //JWT 토큰 생성
+    public String creatJwtToken(AuthInfo authInfo) {
         return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role)
+                .setSubject(authInfo.getEmail())
+                .claim("role", authInfo.getRole())
                 .setExpiration(Date.from(Instant.now().plus(jwtConfig.getAccessTokenExpiration(), ChronoUnit.MINUTES)))
                 .setIssuedAt(Date.from(Instant.now()))
                 .signWith(Keys.hmacShaKeyFor(jwtConfig.getAccessTokenSecretKey().getBytes()))
