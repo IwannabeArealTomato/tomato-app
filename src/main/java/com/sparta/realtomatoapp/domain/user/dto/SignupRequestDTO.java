@@ -1,5 +1,6 @@
 package com.sparta.realtomatoapp.domain.user.dto;
 
+import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,9 +13,9 @@ public class SignupRequestDTO {
     private String password;
     private String userName;
     private String address;
-    private boolean isAdmin; // 관리자 여부
+    private UserRoleEnum role; // 역할을 UserRoleEnum으로 받음
 
     public boolean isAdmin() {
-        return isAdmin;
+        return role == UserRoleEnum.ADMIN;
     }
 }

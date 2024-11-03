@@ -3,7 +3,7 @@ package com.sparta.realtomatoapp.domain.user.common;
 public enum UserRoleEnum {
     USER("ROLE_USER"),
     STORE_OWNER("ROLE_STORE_OWNER"),
-    ADMIN("ROLE_ADMIN"); // 관리자 역할 추가
+    ADMIN("ROLE_ADMIN");
 
     private final String authority;
 
