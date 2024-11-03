@@ -23,8 +23,6 @@ public enum ErrorCode {
 
     // 409 에러
     ALREADY_EMAIL(HttpStatus.CONFLICT, "이미 사용되는 이메일", 409),
-    ALREADY_FRIEND(HttpStatus.CONFLICT, "이미 친구 상태", 409),
-    ALREADY_REQUEST(HttpStatus.CONFLICT, "이미 요청 상태", 409),
     ALREADY_NICKNAME(HttpStatus.CONFLICT, "이미 사용되는 닉네임", 409);
 
     private final HttpStatus code;
