@@ -26,7 +26,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .subject(authInfo.getEmail())
                 .claim("role", authInfo.getRole())
-                .expiration(Date.from(Instant.now().plus(jwtConfig.getAccessTokenExpiration(), ChronoUnit.MINUTES)))
+                .expiration(Date.from(Instant.now().plus(jwtConfig.getAccessTokenExpireTime(), ChronoUnit.MINUTES)))
                 .issuedAt(Date.from(Instant.now()))
                 .signWith(Keys.hmacShaKeyFor(jwtConfig.getAccessTokenSecretKey().getBytes()), Jwts.SIG.HS256)
                 .compact();
