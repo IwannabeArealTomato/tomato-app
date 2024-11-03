@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-     //1. 토큰이 필요없는 API
+        //1. 토큰이 필요없는 API
         String requestURI = request.getRequestURI();
         if (requestURI.contains("/api/auth")) {
             filterChain.doFilter(request, response);
@@ -31,7 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //2. 토큰 검증
         String bearerToken = request.getHeader("Authorization");
-        if(!jwtProvider.verifyAccessToken(bearerToken)) {
+        String token = null;
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            token = bearerToken.substring(7); // "Bearer "의 길이가 7이므로 그 뒤의 문자열을 반환
+        }
+
+        if (!jwtProvider.verifyAccessToken(token)) {
             // 사용자에 잘못된 값 json으로 날림
             unAuthRespons(response);
             return;
