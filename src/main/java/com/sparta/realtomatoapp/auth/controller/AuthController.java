@@ -6,10 +6,8 @@ import com.sparta.realtomatoapp.auth.dto.LoginDto;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final JwtProvider jwtProvider;
+    private final UserService userService;
 
     @PostMapping("/login")
     public String login(@RequestBody LoginDto loginDto) {
@@ -31,4 +30,18 @@ public class AuthController {
         return jwtToken;
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody UserRegistrationRequest request) {
+        log.info("AuthController.signup");
+
+        // 사용자 등록
+        userService.registerUser(
+                request.getEmail(),
+                request.getUserName(),
+                request.getPassword(),
+                request.getAddress()
+        );
+
+        return ResponseEntity.ok("사용자 등록이 완료되었습니다.");
+    }
 }
