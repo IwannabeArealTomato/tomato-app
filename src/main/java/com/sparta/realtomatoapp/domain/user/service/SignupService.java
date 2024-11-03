@@ -1,9 +1,9 @@
-package com.sparta.realtomatoapp.common.service;
+package com.sparta.realtomatoapp.domain.user.service;
 
 import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import com.sparta.realtomatoapp.domain.user.entity.User;
 import com.sparta.realtomatoapp.domain.user.repository.UserRepository;
-import com.sparta.realtomatoapp.common.dto.SignupRequestDTO;
+import com.sparta.realtomatoapp.domain.user.dto.SignupRequestDTO;
 import com.sparta.realtomatoapp.jwt.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,6 +48,6 @@ public class SignupService {
 
         userRepository.save(user);
 
-        return "User registered successfully";
+        return "성공적으로 회원가입이 완료되었습니다.";
     }
 }

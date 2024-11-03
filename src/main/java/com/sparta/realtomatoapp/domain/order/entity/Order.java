@@ -1,6 +1,6 @@
 package com.sparta.realtomatoapp.domain.order.entity;
 
-import com.sparta.realtomatoapp.domain.CreateAuditingEntity;
+import com.sparta.realtomatoapp.domain.common.CreateAuditingEntity;
 import com.sparta.realtomatoapp.domain.order.service.Status;
 import com.sparta.realtomatoapp.domain.store.entity.Store;
 import com.sparta.realtomatoapp.domain.user.entity.User;

@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.common.dto;
+package com.sparta.realtomatoapp.jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

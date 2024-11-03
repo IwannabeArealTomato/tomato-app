@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.common.dto;
+package com.sparta.realtomatoapp.domain.user.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

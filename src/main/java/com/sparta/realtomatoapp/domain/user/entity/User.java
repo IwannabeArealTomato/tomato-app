@@ -1,6 +1,6 @@
 package com.sparta.realtomatoapp.domain.user.entity;
 
-import com.sparta.realtomatoapp.domain.BaseAuditingEntity;
+import com.sparta.realtomatoapp.domain.common.BaseAuditingEntity;
 import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;

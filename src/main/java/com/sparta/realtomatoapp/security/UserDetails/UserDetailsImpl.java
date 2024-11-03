@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.security;
+package com.sparta.realtomatoapp.security.UserDetails;
 
 import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import com.sparta.realtomatoapp.domain.user.entity.User;

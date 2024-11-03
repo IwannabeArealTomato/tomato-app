@@ -1,17 +1,13 @@
 package com.sparta.realtomatoapp.jwt.filter;
 
 import com.sparta.realtomatoapp.jwt.util.JwtUtil;
-import com.sparta.realtomatoapp.security.UserDetailsImpl;
-import io.jsonwebtoken.Claims;
+import com.sparta.realtomatoapp.security.UserDetails.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;

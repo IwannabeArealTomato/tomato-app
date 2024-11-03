@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.jwt.config;
+package com.sparta.realtomatoapp.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

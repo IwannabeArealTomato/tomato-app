@@ -1,8 +1,9 @@
-package com.sparta.realtomatoapp.security;
+package com.sparta.realtomatoapp.security.config;
 
 import com.sparta.realtomatoapp.jwt.filter.JwtAuthorizationFilter;
 import com.sparta.realtomatoapp.jwt.filter.JwtAuthenticationFilter;
 import com.sparta.realtomatoapp.jwt.util.JwtUtil;
+import com.sparta.realtomatoapp.security.UserDetails.UserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

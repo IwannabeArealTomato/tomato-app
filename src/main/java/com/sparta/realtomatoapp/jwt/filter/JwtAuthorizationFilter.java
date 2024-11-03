@@ -1,7 +1,7 @@
 package com.sparta.realtomatoapp.jwt.filter;
 
 import com.sparta.realtomatoapp.jwt.util.JwtUtil;
-import com.sparta.realtomatoapp.security.UserDetailsServiceImpl;
+import com.sparta.realtomatoapp.security.UserDetails.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.domain;
+package com.sparta.realtomatoapp.domain.common;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
