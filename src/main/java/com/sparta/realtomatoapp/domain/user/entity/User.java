@@ -1,12 +1,9 @@
 package com.sparta.realtomatoapp.domain.user.entity;
 
 import com.sparta.realtomatoapp.domain.BaseAuditingEntity;
-import com.sparta.realtomatoapp.domain.order.entity.Order;
-import com.sparta.realtomatoapp.domain.store.entity.Store;
+import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -30,9 +27,8 @@ public class User extends BaseAuditingEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role; // UserRole Enum을 사용
+    private UserRoleEnum role;
 
     @Column(nullable = false)
     private String address;
-
 }
