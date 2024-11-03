@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.jwt.service;
+package com.sparta.realtomatoapp.auth.service;
 
 public class JwtService {
     //RefreshTokenService가 포함되어 Refresh Token Rotation을 구현
