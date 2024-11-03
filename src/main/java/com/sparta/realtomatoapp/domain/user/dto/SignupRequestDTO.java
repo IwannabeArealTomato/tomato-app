@@ -13,9 +13,5 @@ public class SignupRequestDTO {
     private String password;
     private String userName;
     private String address;
-    private UserRoleEnum role; // 역할을 UserRoleEnum으로 받음
-
-    public boolean isAdmin() {
-        return role == UserRoleEnum.ADMIN;
-    }
+    private UserRoleEnum userRole; // UserRoleEnum을 사용하여 역할 지정
 }

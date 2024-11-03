@@ -10,6 +10,6 @@ public class PasswordConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // 기본 강도 설정
+        return new BCryptPasswordEncoder();
     }
 }

@@ -1,60 +1,67 @@
 package com.sparta.realtomatoapp.domain.user.service;
 
-import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import com.sparta.realtomatoapp.domain.user.dto.LoginRequestDTO;
-import com.sparta.realtomatoapp.jwt.dto.TokenResponseDTO;
+import com.sparta.realtomatoapp.domain.user.dto.SignupRequestDTO;
 import com.sparta.realtomatoapp.domain.user.entity.User;
 import com.sparta.realtomatoapp.domain.user.repository.UserRepository;
+import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
+import com.sparta.realtomatoapp.jwt.dto.TokenResponseDTO;
 import com.sparta.realtomatoapp.jwt.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LoginService {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    public LoginService(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
+    // 생성자를 통해 모든 필드를 초기화
+    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
+    @Transactional
     public TokenResponseDTO login(LoginRequestDTO loginRequest) {
-        Authentication authentication = authenticateUser(loginRequest);
-        User user = findUserByEmail(loginRequest.getEmail());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
 
-        String accessToken = jwtUtil.createToken(user.getEmail(), user.getRole(), false);
-        String refreshToken = jwtUtil.createToken(user.getEmail(), user.getRole(), true);
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(user.getEmail(), user.getRole());
 
         return new TokenResponseDTO(accessToken, refreshToken);
     }
 
-    public TokenResponseDTO refreshToken(String oldRefreshToken) {
-        String email = jwtUtil.extractUsernameFromToken(oldRefreshToken);
-        String newRefreshToken = jwtUtil.rotateRefreshToken(oldRefreshToken);
-        String accessToken = jwtUtil.createToken(email, UserRoleEnum.USER, false);
+    @Transactional
+    public String signup(SignupRequestDTO signupRequest) {
+        if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is already in use");
+        }
 
-        return new TokenResponseDTO(accessToken, newRefreshToken);
-    }
+        UserRoleEnum role = signupRequest.getUserRole();
 
-    private Authentication authenticateUser(LoginRequestDTO loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication;
-    }
+        User user = User.builder()
+                .email(signupRequest.getEmail())
+                .password(passwordEncoder.encode(signupRequest.getPassword()))
+                .role(role)
+                .userName(signupRequest.getUserName())
+                .address(signupRequest.getAddress())
+                .build();
 
-    private User findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        userRepository.save(user);
+        return "User registered successfully";
     }
 }

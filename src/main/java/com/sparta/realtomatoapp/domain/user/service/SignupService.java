@@ -1,11 +1,15 @@
 package com.sparta.realtomatoapp.domain.user.service;
 
-import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
+import com.sparta.realtomatoapp.domain.user.dto.LoginRequestDTO;
+import com.sparta.realtomatoapp.domain.user.dto.SignupRequestDTO;
 import com.sparta.realtomatoapp.domain.user.entity.User;
 import com.sparta.realtomatoapp.domain.user.repository.UserRepository;
-import com.sparta.realtomatoapp.domain.user.dto.SignupRequestDTO;
+import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
+import com.sparta.realtomatoapp.jwt.dto.TokenResponseDTO;
 import com.sparta.realtomatoapp.jwt.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,38 +20,48 @@ public class SignupService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    public SignupService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    // 클래스 이름과 일치하도록 생성자 이름 수정
+    public SignupService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
     @Transactional
-    public String registerUser(SignupRequestDTO requestDTO) {
-        String email = requestDTO.getEmail();
-        String password = passwordEncoder.encode(requestDTO.getPassword());
+    public TokenResponseDTO login(LoginRequestDTO loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
 
-        // 이메일 중복 확인
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(user.getEmail(), user.getRole());
+
+        return new TokenResponseDTO(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public String signup(SignupRequestDTO signupRequest) {
+        if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is already in use");
         }
 
-        // ADMIN 권한 설정 여부 확인
-        UserRoleEnum role = requestDTO.isAdmin() ? UserRoleEnum.ADMIN : UserRoleEnum.USER;
+        UserRoleEnum role = signupRequest.getUserRole();
 
-        // User 엔터티 생성
         User user = User.builder()
-                .email(email)
-                .password(password)
+                .email(signupRequest.getEmail())
+                .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .role(role)
-                .userName(requestDTO.getUserName())
-                .address(requestDTO.getAddress())
+                .userName(signupRequest.getUserName())
+                .address(signupRequest.getAddress())
                 .build();
 
         userRepository.save(user);
-
-        return "성공적으로 회원가입이 완료되었습니다.";
+        return "User registered successfully";
     }
 }

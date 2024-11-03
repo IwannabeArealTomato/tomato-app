@@ -17,36 +17,43 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Slf4j(topic = "JWT 검증 및 인가") // 로그 주제를 "JWT 검증 및 인가"로 설정
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    // JwtAuthorizationFilter는 인증된 사용자만이 접근할 수 있는 요청에 대해 JWT 토큰을 검증하고,
-    // 유효한 토큰일 경우 SecurityContextHolder에 사용자 정보를 설정합니다.
-
-    private final JwtUtil jwtUtil; // JWT 유틸리티 클래스
-    private final UserDetailsServiceImpl userDetailsService; // 사용자 정보 서비스
+    private final JwtUtil jwtUtil;
+    private final UserDetailsServiceImpl userDetailsService;
 
     public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
-        this.jwtUtil = jwtUtil; // JWT 유틸리티 인스턴스 초기화
-        this.userDetailsService = userDetailsService; // 사용자 정보 서비스 인스턴스 초기화
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.extractTokenFromRequest(req); // 요청에서 토큰 추출
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String token = resolveToken(request);
 
-        if (StringUtils.hasText(token) && jwtUtil.isValidToken(token)) { // 토큰이 유효한지 확인
-            setAuthenticationContext(token); // 유효하면 인증 컨텍스트 설정
+        if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
+            setAuthenticationContext(token);
+        } else {
+            log.warn("Invalid JWT token");
         }
-        filterChain.doFilter(req, res); // 다음 필터로 이동
+        filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(JwtUtil.AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtUtil.BEARER_PREFIX)) {
+            return bearerToken.substring(JwtUtil.BEARER_PREFIX.length());
+        }
+        return null;
     }
 
     private void setAuthenticationContext(String token) {
-        Claims claims = jwtUtil.getClaims(token); // 토큰에서 클레임 정보 추출
-        String email = claims.getSubject(); // 클레임에서 이메일 정보 추출
+        Claims claims = jwtUtil.getClaims(token);
+        String username = claims.getSubject();
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email); // 이메일을 통해 사용자 정보 로드
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()); // 인증 객체 생성
-        SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContextHolder에 인증 객체 설정
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
