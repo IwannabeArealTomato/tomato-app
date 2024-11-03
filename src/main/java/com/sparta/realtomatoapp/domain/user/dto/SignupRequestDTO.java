@@ -13,5 +13,10 @@ public class SignupRequestDTO {
     private String password;
     private String userName;
     private String address;
-    private UserRoleEnum userRole; // UserRoleEnum을 사용하여 역할 지정
+    private UserRoleEnum userRole;
+
+    // 문자열을 UserRoleEnum으로 설정하는 메서드 추가
+    public void setUserRole(String role) {
+        this.userRole = UserRoleEnum.valueOf(role.toUpperCase());
+    }
 }

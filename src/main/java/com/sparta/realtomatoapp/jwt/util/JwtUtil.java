@@ -4,6 +4,7 @@ import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -18,8 +19,8 @@ public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     public static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 5 * 60 * 1000L; // 5분
-    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000L; // 1시간
+    private static final long ACCESS_TOKEN_EXPIRATION = 5 * 60 * 1000L; // 5분
+    private static final long REFRESH_TOKEN_EXPIRATION = 60 * 60 * 1000L; // 1시간
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -33,28 +34,29 @@ public class JwtUtil {
     }
 
     public String createAccessToken(String username, UserRoleEnum role) {
-        return createToken(username, role, ACCESS_TOKEN_EXPIRATION_TIME);
+        return createToken(username, role, ACCESS_TOKEN_EXPIRATION);
     }
 
     public String createRefreshToken(String username, UserRoleEnum role) {
-        return createToken(username, role, REFRESH_TOKEN_EXPIRATION_TIME);
+        return createToken(username, role, REFRESH_TOKEN_EXPIRATION);
     }
 
-    private String createToken(String username, UserRoleEnum role, long expirationTime) {
-        Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
-
+    private String createToken(String username, UserRoleEnum role, long expiration) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim("role", role.getAuthority())
-                .setExpiration(expirationDate)
+                .claim("role", role.name())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key, signatureAlgorithm)
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public boolean isValidToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            // 토큰 만료 로그
+            return false;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
@@ -66,5 +68,13 @@ public class JwtUtil {
 
     public Claims getClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    public String extractTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(BEARER_PREFIX.length());
+        }
+        return null;
     }
 }

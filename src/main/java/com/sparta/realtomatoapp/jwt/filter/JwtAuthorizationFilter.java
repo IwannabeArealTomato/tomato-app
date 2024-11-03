@@ -2,7 +2,7 @@ package com.sparta.realtomatoapp.jwt.filter;
 
 import com.sparta.realtomatoapp.jwt.util.JwtUtil;
 import com.sparta.realtomatoapp.security.UserDetails.UserDetailsServiceImpl;
-import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,31 +29,22 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = resolveToken(request);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String token = jwtUtil.extractTokenFromRequest(request);
 
-        if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
-            setAuthenticationContext(token);
-        } else {
-            log.warn("Invalid JWT token");
+        if (StringUtils.hasText(token) && jwtUtil.isValidToken(token)) {
+            try {
+                String username = jwtUtil.extractUsername(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (JwtException e) {
+                SecurityContextHolder.clearContext();
+                log.error("Invalid JWT token: {}", e.getMessage());
+            }
         }
+
         filterChain.doFilter(request, response);
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(JwtUtil.AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtUtil.BEARER_PREFIX)) {
-            return bearerToken.substring(JwtUtil.BEARER_PREFIX.length());
-        }
-        return null;
-    }
-
-    private void setAuthenticationContext(String token) {
-        Claims claims = jwtUtil.getClaims(token);
-        String username = claims.getSubject();
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

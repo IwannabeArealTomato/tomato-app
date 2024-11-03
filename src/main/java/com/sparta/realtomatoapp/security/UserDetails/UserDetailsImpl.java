@@ -1,12 +1,13 @@
 package com.sparta.realtomatoapp.security.UserDetails;
 
 import com.sparta.realtomatoapp.domain.user.entity.User;
+import com.sparta.realtomatoapp.domain.user.common.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -16,9 +17,14 @@ public class UserDetailsImpl implements UserDetails {
         this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().getAuthority()));
+        UserRoleEnum role = user.getRole();
+        return Collections.singletonList(new SimpleGrantedAuthority(role.getAuthority()));
     }
 
     @Override
@@ -49,9 +55,5 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User getUser() {
-        return user;
     }
 }
