@@ -29,4 +29,15 @@ public class JwtProvider {
                 .compact();
     }
 
+    //JWT 토큰 검증
+    public boolean verifyAccessToken(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(jwtConfig.getAccessTokenSecretKey())
+                    .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
