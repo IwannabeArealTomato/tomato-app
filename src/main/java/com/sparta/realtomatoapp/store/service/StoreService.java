@@ -27,4 +27,11 @@ public class StoreService {
         Store savedStore = storeRepository.save(store);
         return new StoreCreateResponseDTO(savedStore);  // StoreCreateResponseDTO 사용
     }
+
+    // 특정 가게 조회
+    public StoreResponseDTO getStoreById(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("가게를 찾을 수 없습니다."));
+        return new StoreResponseDTO(store);  // StoreResponseDTO 사용
+    }
 }

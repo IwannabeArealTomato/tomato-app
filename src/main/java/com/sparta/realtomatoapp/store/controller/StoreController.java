@@ -18,4 +18,12 @@ public class StoreController {
         StoreCreateResponseDTO response = storeService.createStore(requestDto);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{storeId}")
+    public ResponseEntity<StoreResponseDTO> getStore(@PathVariable Long storeId) {
+        StoreResponseDTO response = storeService.getStoreById(storeId);
+        return ResponseEntity.ok(response);
+    }
+
+
 }
