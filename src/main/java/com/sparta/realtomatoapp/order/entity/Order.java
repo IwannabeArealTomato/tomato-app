@@ -1,17 +1,14 @@
-package com.sparta.realtomatoapp.domain.order.entity;
+package com.sparta.realtomatoapp.order.entity;
 
-import com.sparta.realtomatoapp.domain.CreateAuditingEntity;
-import com.sparta.realtomatoapp.domain.order.service.Status;
-import com.sparta.realtomatoapp.domain.store.entity.Store;
-import com.sparta.realtomatoapp.domain.user.entity.User;
-import com.sparta.realtomatoapp.domain.menu.entity.Menu;
+import com.sparta.realtomatoapp.common.BaseAuditingEntity;
+import com.sparta.realtomatoapp.menu.entity.Menu;
+import com.sparta.realtomatoapp.store.entity.Store;
+import com.sparta.realtomatoapp.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -27,11 +24,10 @@ public class Order extends BaseAuditingEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    private OrderStatus status;
 
     @Column(nullable = false)
     private Integer amount;
-
 
     @ManyToOne
     @JoinColumn(name = "userId")
