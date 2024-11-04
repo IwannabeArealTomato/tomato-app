@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class StoreService {
@@ -33,5 +36,13 @@ public class StoreService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("가게를 찾을 수 없습니다."));
         return new StoreResponseDTO(store);  // StoreResponseDTO 사용
+    }
+
+    // 모든 가게 조회
+    public StoreListResponseDTO getAllStores() {
+        List<StoreResponseDTO> stores = storeRepository.findAll().stream()
+                .map(StoreResponseDTO::new)
+                .collect(Collectors.toList());
+        return new StoreListResponseDTO(stores);  // StoreListResponseDTO 사용
     }
 }
