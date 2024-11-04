@@ -1,12 +1,11 @@
-package com.sparta.realtomatoapp.domain.user.entity;
+package com.sparta.realtomatoapp.user.entity;
 
-import com.sparta.realtomatoapp.domain.BaseAuditingEntity;
-import com.sparta.realtomatoapp.domain.order.entity.Order;
-import com.sparta.realtomatoapp.domain.store.entity.Store;
+import com.sparta.realtomatoapp.common.ModifiedAuditingEntity;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -31,6 +30,10 @@ public class User extends ModifiedAuditingEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role; // UserRole Enum을 사용
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus status; // UserStatus Enum을 사용
 
     @Column(nullable = false)
     private String address;
