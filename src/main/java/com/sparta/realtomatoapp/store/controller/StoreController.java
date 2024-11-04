@@ -30,4 +30,10 @@ public class StoreController {
         StoreListResponseDTO response = storeService.getAllStores();
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{storeId}")
+    public ResponseEntity<StoreUpdateResponseDTO> updateStore(@PathVariable Long storeId, @RequestBody StoreUpdateRequestDTO requestDto) {
+        StoreUpdateResponseDTO response = storeService.updateStore(storeId, requestDto);
+        return ResponseEntity.ok(response);
+    }
 }
