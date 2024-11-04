@@ -25,5 +25,9 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
-
+    @GetMapping
+    public ResponseEntity<StoreListResponseDTO> getAllStores() {
+        StoreListResponseDTO response = storeService.getAllStores();
+        return ResponseEntity.ok(response);
+    }
 }
