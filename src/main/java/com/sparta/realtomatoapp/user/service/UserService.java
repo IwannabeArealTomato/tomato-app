@@ -1,7 +1,7 @@
 package com.sparta.realtomatoapp.user.service;
 
-import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequest;
-import com.sparta.realtomatoapp.auth.dto.UserResponse;
+import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDTO;
+import com.sparta.realtomatoapp.auth.dto.UserResponseDTO;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.security.util.PasswordEncoder;
@@ -23,7 +23,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public UserResponse registerUser(UserRegistrationRequest request) {
+    public UserResponseDTO registerUser(UserRegistrationRequestDTO request) {
         // 이메일 중복 체크
         if (findUserByEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
@@ -49,8 +49,8 @@ public class UserService {
         return convertToDto(user);
     }
 
-    public UserResponse convertToDto(User user) {
-        return UserResponse.builder()
+    public UserResponseDTO convertToDto(User user) {
+        return UserResponseDTO.builder()
                 .userId(user.getUserId())
                 .userName(user.getUserName())
                 .email(user.getEmail())

@@ -1,8 +1,8 @@
 package com.sparta.realtomatoapp.auth.controller;
 
-import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequest;
-import com.sparta.realtomatoapp.auth.dto.UserResponse;
-import com.sparta.realtomatoapp.common.dto.ApiResponse;
+import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDTO;
+import com.sparta.realtomatoapp.auth.dto.UserResponseDTO;
+import com.sparta.realtomatoapp.common.dto.ApiResponseDTO;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import com.sparta.realtomatoapp.auth.dto.LoginDto;
@@ -37,15 +37,15 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> signup(@RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<ApiResponseDTO> signup(@RequestBody UserRegistrationRequestDTO request) {
         log.info("AuthController.signup");
 
         // 사용자 등록
-        UserResponse userResponse = userService.registerUser(request);
+        UserResponseDTO userResponseDTO = userService.registerUser(request);
 
-        return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
+        return ResponseEntity.ok(ApiResponseDTO.<UserResponseDTO>builder()
                 .message("회원 가입 성공")
-                .data(Collections.singletonList(userResponse))
+                .data(Collections.singletonList(userResponseDTO))
                 .build());
     }
 }

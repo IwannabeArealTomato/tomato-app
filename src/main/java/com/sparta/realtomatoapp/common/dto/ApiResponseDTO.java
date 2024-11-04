@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ApiResponse<T> {
+public class ApiResponseDTO<T> {
     private String message;
     private List<T> data;
 }

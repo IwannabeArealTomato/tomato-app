@@ -1,11 +1,9 @@
 package com.sparta.realtomatoapp.auth.dto;
 
-import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-public class UserRegistrationRequest {
+public class UserRegistrationRequestDTO {
     private String userName;
     private String email;
     private String password;
