@@ -16,7 +16,6 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
 
-    // 가게 생성
     @Transactional
     public StoreCreateResponseDto createStore(StoreCreateRequestDto requestDto) {
         Store store = Store.builder()
@@ -26,44 +25,63 @@ public class StoreService {
                 .minPrice(requestDto.getMinPrice())
                 .status(requestDto.getStatus())
                 .build();
-
         Store savedStore = storeRepository.save(store);
-        return new StoreCreateResponseDto(savedStore);  // StoreCreateResponseDto 사용
+
+        return new StoreCreateResponseDto(
+                savedStore.getStoreId(),
+                savedStore.getStoreName(),
+                savedStore.getOpenTime(),
+                savedStore.getCloseTime(),
+                savedStore.getMinPrice(),
+                savedStore.getStatus()
+        );
     }
 
-    // 특정 가게 조회
     public StoreResponseDto getStoreById(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("가게를 찾을 수 없습니다."));
-        return new StoreResponseDto(store);  // StoreResponseDto 사용
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with ID: " + storeId));
+
+        return new StoreResponseDto(
+                store.getStoreId(),
+                store.getStoreName(),
+                store.getOpenTime(),
+                store.getCloseTime(),
+                store.getMinPrice()
+        );
     }
 
-    // 모든 가게 조회
-    public StoreListResponseDto getAllStores() {
-        List<StoreResponseDto> stores = storeRepository.findAll().stream()
-                .map(StoreResponseDto::new)
+    public List<StoreListResponseDto> getAllStores() {
+        return storeRepository.findAll().stream()
+                .map(store -> new StoreListResponseDto(
+                        store.getStoreId(),
+                        store.getStoreName(),
+                        store.getOpenTime(),
+                        store.getCloseTime(),
+                        store.getMinPrice(),
+                        store.getStatus()
+                ))
                 .collect(Collectors.toList());
-        return new StoreListResponseDto(stores);  // StoreListResponseDto 사용
     }
 
-    // 가게 정보 수정
     @Transactional
     public StoreUpdateResponseDto updateStore(Long storeId, StoreUpdateRequestDto requestDto) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with ID: " + storeId));
 
         store.setStoreName(requestDto.getStoreName());
         store.setOpenTime(requestDto.getOpenTime());
         store.setCloseTime(requestDto.getCloseTime());
         store.setMinPrice(requestDto.getMinPrice());
 
-        return new StoreUpdateResponseDto(store);  // StoreUpdateResponseDto 사용
+        return new StoreUpdateResponseDto("Update successful", store.getStoreName(), store.getMinPrice());
     }
 
-    // 가게 삭제
     @Transactional
     public StoreDeleteResponseDto deleteStore(Long storeId) {
+        if (!storeRepository.existsById(storeId)) {
+            throw new IllegalArgumentException("Store not found with ID: " + storeId);
+        }
         storeRepository.deleteById(storeId);
-        return new StoreDeleteResponseDto(storeId);  // StoreDeleteResponseDto 사용
+        return new StoreDeleteResponseDto("Delete successful");
     }
 }
