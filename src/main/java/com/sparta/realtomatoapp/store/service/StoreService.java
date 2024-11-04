@@ -45,4 +45,18 @@ public class StoreService {
                 .collect(Collectors.toList());
         return new StoreListResponseDTO(stores);  // StoreListResponseDTO 사용
     }
+
+    // 가게 정보 수정
+    @Transactional
+    public StoreUpdateResponseDTO updateStore(Long storeId, StoreUpdateRequestDTO requestDto) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("가게를 찾을 수 없습니다."));
+
+        store.setStoreName(requestDto.getStoreName());
+        store.setOpenTime(requestDto.getOpenTime());
+        store.setCloseTime(requestDto.getCloseTime());
+        store.setMinPrice(requestDto.getMinPrice());
+
+        return new StoreUpdateResponseDTO(store);  // StoreUpdateResponseDTO 사용
+    }
 }
