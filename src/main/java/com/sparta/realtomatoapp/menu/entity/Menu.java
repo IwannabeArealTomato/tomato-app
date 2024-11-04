@@ -30,4 +30,10 @@ public class Menu {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "storeId")
     private Store store;
+
+    public void updateMenu(String menuName, Integer price) {
+        this.menuName = menuName;
+        this.price = price;
+    }
+
 }
