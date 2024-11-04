@@ -1,13 +1,21 @@
 package com.sparta.realtomatoapp.auth.controller;
 
+import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequest;
+import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
+import com.sparta.realtomatoapp.common.dto.ApiResponse;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import com.sparta.realtomatoapp.auth.dto.LoginDto;
+import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
+import com.sparta.realtomatoapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -31,17 +39,19 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<ApiResponse> signup(@RequestBody UserRegistrationRequest request) {
         log.info("AuthController.signup");
 
         // 사용자 등록
-        userService.registerUser(
-                request.getEmail(),
-                request.getUserName(),
-                request.getPassword(),
-                request.getAddress()
-        );
+        User user = userService.registerUser(request);
 
-        return ResponseEntity.ok("사용자 등록이 완료되었습니다.");
+        List<UserResponseDto> userResponseDto = List.of(userService.convertToDto(user));
+
+        ApiResponse response = ApiResponse.builder()
+                .message("회원 가입 성공")
+                .data(userResponseDto)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }
