@@ -25,15 +25,15 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
         log.info("AuthController.login");
-        AuthInfo authInfo = AuthInfo.builder()
-                .email(loginDto.getEmail())
-                .role(String.valueOf(UserRole.GUEST))
-                .build();
 
-        String jwtToken = jwtProvider.createJwtToken(authInfo);
-        return jwtToken;
+        try {
+            String jwtToken = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
+            return ResponseEntity.ok(jwtToken);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/signup")
