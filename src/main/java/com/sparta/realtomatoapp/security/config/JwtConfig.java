@@ -17,6 +17,6 @@ public class JwtConfig {
     private Integer jwtaccesstokenexpiretime;
 
     // 서명 키 (secret key)
-    @Value("${acess.token.secret.key}")
+    @Value("${access.token.secret.key}")
     private String jwtaccessTokenSecretKey;
 }
