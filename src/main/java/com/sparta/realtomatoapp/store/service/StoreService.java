@@ -59,4 +59,11 @@ public class StoreService {
 
         return new StoreUpdateResponseDTO(store);  // StoreUpdateResponseDTO 사용
     }
+
+    // 가게 삭제
+    @Transactional
+    public StoreDeleteResponseDTO deleteStore(Long storeId) {
+        storeRepository.deleteById(storeId);
+        return new StoreDeleteResponseDTO(storeId);  // StoreDeleteResponseDTO 사용
+    }
 }

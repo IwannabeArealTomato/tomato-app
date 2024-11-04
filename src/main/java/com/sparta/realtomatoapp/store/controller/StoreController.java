@@ -36,4 +36,10 @@ public class StoreController {
         StoreUpdateResponseDTO response = storeService.updateStore(storeId, requestDto);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<StoreDeleteResponseDTO> deleteStore(@PathVariable Long storeId) {
+        StoreDeleteResponseDTO response = storeService.deleteStore(storeId);
+        return ResponseEntity.ok(response);
+    }
 }
