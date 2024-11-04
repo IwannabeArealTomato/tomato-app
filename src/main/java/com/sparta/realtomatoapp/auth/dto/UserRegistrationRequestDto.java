@@ -3,7 +3,7 @@ package com.sparta.realtomatoapp.auth.dto;
 import lombok.Getter;
 
 @Getter
-public class UserRegistrationRequestDTO {
+public class UserRegistrationRequestDto {
     private String userName;
     private String email;
     private String password;
