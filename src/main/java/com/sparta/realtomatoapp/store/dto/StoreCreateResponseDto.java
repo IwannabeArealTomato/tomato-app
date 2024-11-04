@@ -4,7 +4,7 @@ import com.sparta.realtomatoapp.store.entity.Store;
 import lombok.Getter;
 
 @Getter
-public class StoreCreateResponseDTO {
+public class StoreCreateResponseDto {
     private Long storeId;
     private String storeName;
     private String openTime;
@@ -12,7 +12,7 @@ public class StoreCreateResponseDTO {
     private Long minPrice;
     private String status;
 
-    public StoreCreateResponseDTO(Store store) {
+    public StoreCreateResponseDto(Store store) {
         this.storeId = store.getStoreId();
         this.storeName = store.getStoreName();
         this.openTime = store.getOpenTime().toString();

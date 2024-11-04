@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
-public class StoreCreateRequestDTO {
+public class StoreCreateRequestDto {
 
     @NotNull(message = "가게 이름은 필수 입니다.")
     @Size(min = 3, max = 20, message = "가게 이름은 3글자 이상 20글자 이하여야 합니다.")

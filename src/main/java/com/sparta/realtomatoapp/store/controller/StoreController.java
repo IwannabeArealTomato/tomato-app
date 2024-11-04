@@ -14,32 +14,32 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
-    public ResponseEntity<StoreCreateResponseDTO> createStore(@RequestBody StoreCreateRequestDTO requestDto) {
-        StoreCreateResponseDTO response = storeService.createStore(requestDto);
+    public ResponseEntity<StoreCreateResponseDto> createStore(@RequestBody StoreCreateRequestDto requestDto) {
+        StoreCreateResponseDto response = storeService.createStore(requestDto);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDTO> getStore(@PathVariable Long storeId) {
-        StoreResponseDTO response = storeService.getStoreById(storeId);
+    public ResponseEntity<StoreResponseDto> getStore(@PathVariable Long storeId) {
+        StoreResponseDto response = storeService.getStoreById(storeId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<StoreListResponseDTO> getAllStores() {
-        StoreListResponseDTO response = storeService.getAllStores();
+    public ResponseEntity<StoreListResponseDto> getAllStores() {
+        StoreListResponseDto response = storeService.getAllStores();
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{storeId}")
-    public ResponseEntity<StoreUpdateResponseDTO> updateStore(@PathVariable Long storeId, @RequestBody StoreUpdateRequestDTO requestDto) {
-        StoreUpdateResponseDTO response = storeService.updateStore(storeId, requestDto);
+    public ResponseEntity<StoreUpdateResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreUpdateRequestDto requestDto) {
+        StoreUpdateResponseDto response = storeService.updateStore(storeId, requestDto);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{storeId}")
-    public ResponseEntity<StoreDeleteResponseDTO> deleteStore(@PathVariable Long storeId) {
-        StoreDeleteResponseDTO response = storeService.deleteStore(storeId);
+    public ResponseEntity<StoreDeleteResponseDto> deleteStore(@PathVariable Long storeId) {
+        StoreDeleteResponseDto response = storeService.deleteStore(storeId);
         return ResponseEntity.ok(response);
     }
 }
