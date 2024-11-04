@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.domain.review.entity;
+package com.sparta.realtomatoapp.review.entity;
 
 import com.sparta.realtomatoapp.common.BaseAuditingEntity;
 import com.sparta.realtomatoapp.order.entity.Order;
@@ -7,9 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Builder
