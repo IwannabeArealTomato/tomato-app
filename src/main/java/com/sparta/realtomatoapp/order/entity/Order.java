@@ -1,6 +1,6 @@
 package com.sparta.realtomatoapp.order.entity;
 
-import com.sparta.realtomatoapp.common.BaseAuditingEntity;
+import com.sparta.realtomatoapp.common.entity.BaseAuditingEntity;
 import com.sparta.realtomatoapp.menu.entity.Menu;
 import com.sparta.realtomatoapp.store.entity.Store;
 import com.sparta.realtomatoapp.user.entity.User;

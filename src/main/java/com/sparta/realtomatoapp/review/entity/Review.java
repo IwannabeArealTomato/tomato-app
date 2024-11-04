@@ -1,6 +1,6 @@
 package com.sparta.realtomatoapp.review.entity;
 
-import com.sparta.realtomatoapp.common.BaseAuditingEntity;
+import com.sparta.realtomatoapp.common.entity.BaseAuditingEntity;
 import com.sparta.realtomatoapp.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

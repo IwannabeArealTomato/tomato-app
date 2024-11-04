@@ -1,6 +1,6 @@
 package com.sparta.realtomatoapp.store.entity;
 
-import com.sparta.realtomatoapp.common.BaseAuditingEntity;
+import com.sparta.realtomatoapp.common.entity.BaseAuditingEntity;
 import com.sparta.realtomatoapp.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

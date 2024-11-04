@@ -1,6 +1,6 @@
 package com.sparta.realtomatoapp.user.entity;
 
-import com.sparta.realtomatoapp.common.ModifiedAuditingEntity;
+import com.sparta.realtomatoapp.common.entity.ModifiedAuditingEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

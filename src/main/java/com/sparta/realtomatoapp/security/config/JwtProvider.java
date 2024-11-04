@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.auth.config;
+package com.sparta.realtomatoapp.security.config;
 
 import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import io.jsonwebtoken.Claims;

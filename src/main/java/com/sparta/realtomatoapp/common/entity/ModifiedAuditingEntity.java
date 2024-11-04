@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.common;
+package com.sparta.realtomatoapp.common.entity;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.LastModifiedDate;

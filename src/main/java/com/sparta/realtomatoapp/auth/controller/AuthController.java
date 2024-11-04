@@ -1,6 +1,6 @@
 package com.sparta.realtomatoapp.auth.controller;
 
-import com.sparta.realtomatoapp.auth.config.JwtProvider;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import com.sparta.realtomatoapp.auth.dto.LoginDto;
 import com.sparta.realtomatoapp.user.entity.UserRole;

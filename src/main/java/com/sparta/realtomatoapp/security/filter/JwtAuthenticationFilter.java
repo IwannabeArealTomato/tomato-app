@@ -1,6 +1,6 @@
-package com.sparta.realtomatoapp.auth.filter;
+package com.sparta.realtomatoapp.security.filter;
 
-import com.sparta.realtomatoapp.auth.config.JwtProvider;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

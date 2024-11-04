@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.auth.config;
+package com.sparta.realtomatoapp.security.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
