@@ -14,9 +14,9 @@ public class JwtConfig {
 
     // 토큰의 만료 시간 (분 단위)
     @Value("${acess.token.expire.time}")
-    private Integer accessTokenExpireTime;
+    private Integer jwtaccesstokenexpiretime;
 
     // 서명 키 (secret key)
     @Value("${acess.token.secret.key}")
-    private String accessTokenSecretKey;
+    private String jwtaccessTokenSecretKey;
 }
