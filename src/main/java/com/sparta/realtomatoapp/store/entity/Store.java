@@ -1,13 +1,11 @@
-package com.sparta.realtomatoapp.domain.store.entity;
+package com.sparta.realtomatoapp.store.entity;
 
-import com.sparta.realtomatoapp.domain.user.entity.User;
-import com.sparta.realtomatoapp.domain.menu.entity.Menu;
-import com.sparta.realtomatoapp.domain.order.entity.Order;
+import com.sparta.realtomatoapp.common.BaseAuditingEntity;
+import com.sparta.realtomatoapp.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
 @Builder
@@ -35,7 +33,7 @@ public class Store extends BaseAuditingEntity {
     private Long minPrice;
 
     @Column(nullable = false)
-    private String status;
+    private StoreStatus status;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
