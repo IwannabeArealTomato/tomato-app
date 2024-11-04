@@ -1,9 +1,9 @@
 package com.sparta.realtomatoapp.auth.controller;
 
-import com.sparta.realtomatoapp.auth.config.JwtProvider;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import com.sparta.realtomatoapp.auth.dto.LoginDto;
-import com.sparta.realtomatoapp.domain.user.entity.UserRole;
+import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
