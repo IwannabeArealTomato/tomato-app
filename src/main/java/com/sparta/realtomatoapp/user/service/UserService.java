@@ -1,7 +1,7 @@
 package com.sparta.realtomatoapp.user.service;
 
 import com.sparta.realtomatoapp.auth.dto.AuthInfo;
-import com.sparta.realtomatoapp.auth.dto.LoginDto;
+import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
@@ -27,7 +27,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public String loginUser(LoginDto request) {
+    public String loginUser(LoginRequestDto request) {
         User user = findUserByEmail(request.getEmail()).orElseThrow(() ->
                 new IllegalArgumentException("이메일이 존재하지 않습니다."));
 

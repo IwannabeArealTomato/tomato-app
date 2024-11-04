@@ -4,7 +4,7 @@ import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
 import com.sparta.realtomatoapp.common.dto.BaseResponseDto;
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
-import com.sparta.realtomatoapp.auth.dto.LoginDto;
+import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponseDto> login(@RequestBody LoginDto request) {
+    public ResponseEntity<BaseResponseDto> login(@RequestBody LoginRequestDto request) {
         log.info("AuthController.login");
 
         try {
