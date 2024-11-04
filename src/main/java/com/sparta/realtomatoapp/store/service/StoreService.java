@@ -18,7 +18,7 @@ public class StoreService {
 
     // 가게 생성
     @Transactional
-    public StoreCreateResponseDTO createStore(StoreCreateRequestDTO requestDto) {
+    public StoreCreateResponseDto createStore(StoreCreateRequestDto requestDto) {
         Store store = Store.builder()
                 .storeName(requestDto.getStoreName())
                 .openTime(requestDto.getOpenTime())
@@ -28,27 +28,27 @@ public class StoreService {
                 .build();
 
         Store savedStore = storeRepository.save(store);
-        return new StoreCreateResponseDTO(savedStore);  // StoreCreateResponseDTO 사용
+        return new StoreCreateResponseDto(savedStore);  // StoreCreateResponseDto 사용
     }
 
     // 특정 가게 조회
-    public StoreResponseDTO getStoreById(Long storeId) {
+    public StoreResponseDto getStoreById(Long storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("가게를 찾을 수 없습니다."));
-        return new StoreResponseDTO(store);  // StoreResponseDTO 사용
+        return new StoreResponseDto(store);  // StoreResponseDto 사용
     }
 
     // 모든 가게 조회
-    public StoreListResponseDTO getAllStores() {
-        List<StoreResponseDTO> stores = storeRepository.findAll().stream()
-                .map(StoreResponseDTO::new)
+    public StoreListResponseDto getAllStores() {
+        List<StoreResponseDto> stores = storeRepository.findAll().stream()
+                .map(StoreResponseDto::new)
                 .collect(Collectors.toList());
-        return new StoreListResponseDTO(stores);  // StoreListResponseDTO 사용
+        return new StoreListResponseDto(stores);  // StoreListResponseDto 사용
     }
 
     // 가게 정보 수정
     @Transactional
-    public StoreUpdateResponseDTO updateStore(Long storeId, StoreUpdateRequestDTO requestDto) {
+    public StoreUpdateResponseDto updateStore(Long storeId, StoreUpdateRequestDto requestDto) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("가게를 찾을 수 없습니다."));
 
@@ -57,13 +57,13 @@ public class StoreService {
         store.setCloseTime(requestDto.getCloseTime());
         store.setMinPrice(requestDto.getMinPrice());
 
-        return new StoreUpdateResponseDTO(store);  // StoreUpdateResponseDTO 사용
+        return new StoreUpdateResponseDto(store);  // StoreUpdateResponseDto 사용
     }
 
     // 가게 삭제
     @Transactional
-    public StoreDeleteResponseDTO deleteStore(Long storeId) {
+    public StoreDeleteResponseDto deleteStore(Long storeId) {
         storeRepository.deleteById(storeId);
-        return new StoreDeleteResponseDTO(storeId);  // StoreDeleteResponseDTO 사용
+        return new StoreDeleteResponseDto(storeId);  // StoreDeleteResponseDto 사용
     }
 }

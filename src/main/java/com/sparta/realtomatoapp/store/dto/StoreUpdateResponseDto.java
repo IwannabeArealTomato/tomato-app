@@ -1,24 +1,25 @@
 package com.sparta.realtomatoapp.store.dto;
 
 import com.sparta.realtomatoapp.store.entity.Store;
-import com.sparta.realtomatoapp.store.entity.StoreStatus;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class StoreResponseDTO {
+@NoArgsConstructor
+public class StoreUpdateResponseDto {
     private Long storeId;
     private String storeName;
     private String openTime;
     private String closeTime;
     private Long minPrice;
-    private StoreStatus status;
+    private String status;
 
-    public StoreResponseDTO(Store store) {
+    public StoreUpdateResponseDto(Store store) {
         this.storeId = store.getStoreId();
         this.storeName = store.getStoreName();
         this.openTime = store.getOpenTime().toString();
         this.closeTime = store.getCloseTime().toString();
         this.minPrice = store.getMinPrice();
-        this.status = store.getStatus();
+        this.status = store.getStatus().toString();
     }
 }

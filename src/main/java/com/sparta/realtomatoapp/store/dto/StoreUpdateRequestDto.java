@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalTime;
 
 @Getter
-public class StoreUpdateRequestDTO {
+public class StoreUpdateRequestDto {
     @NotNull(message = "가게 이름을 필수로 입력하셔야 합니다.")
     private String storeName;
     @NotNull(message = "개장 시간을 필수로 입력하셔야 합니다.")
