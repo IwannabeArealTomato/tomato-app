@@ -1,6 +1,6 @@
-package com.sparta.realtomatoapp.domain.menu.entity;
+package com.sparta.realtomatoapp.menu.entity;
 
-import com.sparta.realtomatoapp.domain.store.entity.Store;
+import com.sparta.realtomatoapp.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

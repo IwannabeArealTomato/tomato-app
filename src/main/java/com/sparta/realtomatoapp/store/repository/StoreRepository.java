@@ -1,6 +1,6 @@
-package com.sparta.realtomatoapp.domain.store.repository;
+package com.sparta.realtomatoapp.store.repository;
 
-import com.sparta.realtomatoapp.domain.store.entity.Store;
+import com.sparta.realtomatoapp.store.entity.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {

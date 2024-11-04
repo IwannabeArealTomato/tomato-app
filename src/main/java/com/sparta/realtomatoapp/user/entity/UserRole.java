@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.domain.user.entity;
+package com.sparta.realtomatoapp.user.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
