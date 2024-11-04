@@ -1,7 +1,10 @@
 package com.sparta.realtomatoapp.user.service;
 
+import com.sparta.realtomatoapp.auth.dto.AuthInfo;
+import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.security.util.PasswordEncoder;
@@ -18,9 +21,27 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoderUtil;
+    private final JwtProvider jwtProvider; // JWT 토큰 생성을 위해 필요
 
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public String loginUser(LoginRequestDto request) {
+        User user = findUserByEmail(request.getEmail()).orElseThrow(() ->
+                new IllegalArgumentException("이메일이 존재하지 않습니다."));
+
+        if (!passwordEncoderUtil.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // JWT 토큰 생성
+        AuthInfo authInfo = AuthInfo.builder()
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .build();
+
+        return jwtProvider.createJwtToken(authInfo);
     }
 
     public UserResponseDto registerUser(UserRegistrationRequestDto request) {
