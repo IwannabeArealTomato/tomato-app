@@ -1,73 +1,106 @@
 package com.sparta.realtomatoapp.user.service;
 
-import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
+import com.sparta.realtomatoapp.security.refreshToken.RefreshTokenService;
+import com.sparta.realtomatoapp.security.config.JwtConfig;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
-import com.sparta.realtomatoapp.security.util.PasswordEncoder;
+import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoderUtil;
-    private final JwtProvider jwtProvider; // JWT 토큰 생성을 위해 필요
+    private final PasswordEncoderUtil passwordEncoderUtil;
+    private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtConfig jwtConfig; // JwtConfig 추가
 
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public String loginUser(LoginRequestDto request) {
-        User user = findUserByEmail(request.getEmail()).orElseThrow(() ->
-                new IllegalArgumentException("이메일이 존재하지 않습니다."));
+    public Map<String, String> loginUserWithTokens(LoginRequestDto request) {
+        log.info("Fetching user by email: {}", request.getEmail());
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> {
+                    log.error("User not found for email: {}", request.getEmail());
+                    return new IllegalArgumentException("이메일이 존재하지 않습니다.");
+                });
+
+        log.info("User found for email: {}", request.getEmail());
 
         if (!passwordEncoderUtil.matches(request.getPassword(), user.getPassword())) {
+            log.error("Password mismatch for email: {}", request.getEmail());
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // JWT 토큰 생성
-        AuthInfo authInfo = AuthInfo.builder()
-                .email(user.getEmail())
-                .role(user.getRole().name())
-                .build();
+        log.info("Password verified for email: {}", request.getEmail());
 
-        return jwtProvider.createJwtToken(authInfo);
+        String accessToken = jwtProvider.generateToken(user.getEmail());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+
+        log.info("Tokens generated for email: {}", request.getEmail());
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
+        return tokens;
     }
 
+
     public UserResponseDto registerUser(UserRegistrationRequestDto request) {
-        // 이메일 중복 체크
         if (findUserByEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
 
-        // 비밀번호 암호화
         String encodedPassword = passwordEncoderUtil.encode(request.getPassword());
-
         UserRole userRole = UserRole.valueOf(request.getUserRole());
 
-        // 기본 사용자 역할 설정
         User user = User.builder()
                 .email(request.getEmail())
                 .userName(request.getUserName())
                 .password(encodedPassword)
                 .role(userRole)
-                .status(UserStatus.ACTIVE) // 활성화 상태
+                .status(UserStatus.ACTIVE)
                 .address(request.getAddress())
                 .build();
 
         userRepository.save(user);
 
         return convertToDto(user);
+    }
+
+    public String refreshAccessToken(String refreshToken) {
+        if (!refreshTokenService.isTokenValid(refreshToken)) {
+            throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다.");
+        }
+        String username = jwtProvider.getUserFromRefreshToken(refreshToken);
+        return jwtProvider.generateToken(username);
+    }
+
+    public boolean verifyRefreshToken(String refreshToken) {
+        return refreshTokenService.isTokenValid(refreshToken);
+    }
+
+    public void invalidateRefreshToken(String refreshToken) {
+        refreshTokenService.invalidateRefreshToken(refreshToken);
     }
 
     public UserResponseDto convertToDto(User user) {
