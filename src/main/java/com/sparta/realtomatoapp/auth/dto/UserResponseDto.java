@@ -1,6 +1,7 @@
 package com.sparta.realtomatoapp.auth.dto;
 
 import com.sparta.realtomatoapp.user.entity.UserRole;
+import com.sparta.realtomatoapp.user.entity.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ public class UserResponseDto {
     private String userName;
     private String email;
     private UserRole role;
+    private UserStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Slf4j
@@ -20,12 +21,11 @@ public class JwtProvider {
 
     public JwtProvider(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
-        // HS512에 적합한 512비트 이상의 시크릿 키 자동 생성
-        this.accessTokenKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-        this.refreshTokenKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        this.accessTokenKey = Keys.hmacShaKeyFor(jwtConfig.getAccessTokenSecretKey().getBytes(StandardCharsets.UTF_8));
+        this.refreshTokenKey = Keys.hmacShaKeyFor(jwtConfig.getRefreshTokenSecretKey().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username) {
+    public String generateAccessToken(String username) {
         return createToken(username, jwtConfig.getAccessTokenExpireTime(), accessTokenKey);
     }
 
@@ -41,21 +41,18 @@ public class JwtProvider {
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(key) // 자동 생성된 키 사용
+                .signWith(key)
                 .compact();
     }
 
-    // Access Token 유효성 검사
     public boolean verifyAccessToken(String token) {
         return verifyToken(token, accessTokenKey);
     }
 
-    // Refresh Token 유효성 검사
     public boolean verifyRefreshToken(String token) {
         return verifyToken(token, refreshTokenKey);
     }
 
-    // 토큰 유효성 검증 메서드 (공통 로직)
     private boolean verifyToken(String token, Key key) {
         try {
             Jwts.parserBuilder()
@@ -69,17 +66,14 @@ public class JwtProvider {
         }
     }
 
-    // Access Token에서 사용자 이름 추출
     public String getUserFromToken(String token) {
         return getUserFromToken(token, accessTokenKey);
     }
 
-    // Refresh Token에서 사용자 이름 추출
     public String getUserFromRefreshToken(String token) {
         return getUserFromToken(token, refreshTokenKey);
     }
 
-    // 사용자 이름 추출 메서드 (공통 로직)
     private String getUserFromToken(String token, Key key) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)

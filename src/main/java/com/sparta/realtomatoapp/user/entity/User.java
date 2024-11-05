@@ -29,11 +29,11 @@ public class User extends ModifiedAuditingEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role; // UserRole Enum을 사용
+    private UserRole role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus status; // UserStatus Enum을 사용
+    private UserStatus status;
 
     @Column(nullable = false)
     private String address;

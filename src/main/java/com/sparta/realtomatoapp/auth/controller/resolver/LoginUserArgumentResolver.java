@@ -1,6 +1,5 @@
 package com.sparta.realtomatoapp.auth.controller.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.security.config.JwtConfig;
@@ -33,7 +32,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
                 parameter.getParameterType().equals(AuthUser.class);
     }
 
-
     @Override
     public AuthUser resolveArgument(@NonNull MethodParameter parameter, ModelAndViewContainer mavContainer,
                                     NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
@@ -44,12 +42,12 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getAccessTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
                     .build()
-                    .parseSignedClaims(token);
+                    .parseClaimsJws(token);
 
-            Claims payload = claimsJws.getPayload();
+            Claims payload = claimsJws.getBody(); // getBody()로 Claims 가져오기
             String email = payload.getSubject();
             UserRole role = UserRole.valueOf(payload.get("role", String.class));
             Long userId = payload.get("userId", Long.class);

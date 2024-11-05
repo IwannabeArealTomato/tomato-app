@@ -47,11 +47,9 @@ public class UserService {
 
         log.info("Password verified for email: {}", request.getEmail());
 
-        // Access Token 및 Refresh Token 생성
-        String accessToken = jwtProvider.generateToken(user.getEmail());
+        String accessToken = jwtProvider.generateAccessToken(user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
 
-        // Refresh Token을 데이터베이스에 저장
         refreshTokenService.createAndStoreRefreshToken(user.getEmail(), refreshToken);
 
         log.info("Tokens generated and Refresh Token stored for email: {}", request.getEmail());
@@ -69,14 +67,12 @@ public class UserService {
         }
 
         String encodedPassword = passwordEncoderUtil.encode(request.getPassword());
-        UserRole userRole = UserRole.valueOf(request.getUserRole());
-
         User user = User.builder()
                 .email(request.getEmail())
                 .userName(request.getUserName())
                 .password(encodedPassword)
-                .role(userRole)
-                .status(UserStatus.ACTIVE)
+                .role(request.getRole())
+                .status(request.getStatus())
                 .address(request.getAddress())
                 .build();
 
@@ -90,7 +86,7 @@ public class UserService {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다.");
         }
         String username = jwtProvider.getUserFromRefreshToken(refreshToken);
-        return jwtProvider.generateToken(username);
+        return jwtProvider.generateAccessToken(username);
     }
 
     public boolean verifyRefreshToken(String refreshToken) {
@@ -107,6 +103,7 @@ public class UserService {
                 .userName(user.getUserName())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
                 .modifiedAt(user.getModifiedAt())
                 .build();

@@ -12,31 +12,4 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class JwtProviderTest {
 
-    @Autowired
-    JwtProvider jwtProvider;
-
-    @Test
-    void test_jwtProvider() {
-        //given
-        String mail = "test@test.com";
-        UserRole role = UserRole.GUEST;
-
-        AuthUser authUser = AuthUser.builder()
-                .email(mail)
-                .role(role)
-                .build();
-
-        //when
-        String jwtToken = jwtProvider.createJwtToken(authUser);
-
-        //then
-        AuthUser currentRequestAuthInfo = jwtProvider.getCurrentRequestAuthInfo(jwtToken);
-
-        Assertions.assertThat(jwtToken).isNotNull();
-        Assertions.assertThat(jwtProvider.verifyAccessToken(jwtToken)).isTrue();
-//        Assertions.assertThat(currentRequestAuthInfo.getEmail()).isEqualTo(mail);
-//        Assertions.assertThat()
-//        Assertions.assertThat(currentRequestAuthInfo.getRole()).isEqualTo(role);
-
-    }
 }

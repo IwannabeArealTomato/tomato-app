@@ -3,6 +3,7 @@ package com.sparta.realtomatoapp.store.service;
 import com.sparta.realtomatoapp.store.dto.*;
 import com.sparta.realtomatoapp.store.entity.Store;
 import com.sparta.realtomatoapp.store.repository.StoreRepository;
+import com.sparta.realtomatoapp.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,13 +18,14 @@ public class StoreService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public StoreCreateResponseDto createStore(StoreCreateRequestDto requestDto) {
+    public StoreCreateResponseDto createStore(User user, StoreCreateRequestDto requestDto) {
         Store store = Store.builder()
                 .storeName(requestDto.getStoreName())
                 .openTime(requestDto.getOpenTime())
                 .closeTime(requestDto.getCloseTime())
                 .minPrice(requestDto.getMinPrice())
                 .status(requestDto.getStatus())
+                .user(user)  // Store의 owner 필드에 User 정보 설정
                 .build();
         Store savedStore = storeRepository.save(store);
 
@@ -64,9 +66,14 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreUpdateResponseDto updateStore(Long storeId, StoreUpdateRequestDto requestDto) {
+    public StoreUpdateResponseDto updateStore(User user, Long storeId, StoreUpdateRequestDto requestDto) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("Store not found with ID: " + storeId));
+
+        // Store의 소유자와 인증된 사용자가 동일한지 확인
+        if (!store.getUser().equals(user)) {
+            throw new SecurityException("You do not have permission to update this store.");
+        }
 
         store.setStoreName(requestDto.getStoreName());
         store.setOpenTime(requestDto.getOpenTime());
@@ -77,10 +84,15 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreDeleteResponseDto deleteStore(Long storeId) {
-        if (!storeRepository.existsById(storeId)) {
-            throw new IllegalArgumentException("Store not found with ID: " + storeId);
+    public StoreDeleteResponseDto deleteStore(User user, Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found with ID: " + storeId));
+
+        // Store의 소유자와 인증된 사용자가 동일한지 확인
+        if (!store.getUser().equals(user)) {
+            throw new SecurityException("You do not have permission to delete this store.");
         }
+
         storeRepository.deleteById(storeId);
         return new StoreDeleteResponseDto("Delete successful");
     }

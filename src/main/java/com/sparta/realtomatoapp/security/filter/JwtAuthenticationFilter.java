@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String refreshToken = request.getHeader("Refresh-Token");
         if (refreshToken != null && jwtProvider.verifyRefreshToken(refreshToken)) {
             String username = jwtProvider.getUserFromRefreshToken(refreshToken);
-            String newAccessToken = jwtProvider.generateToken(username);
+            String newAccessToken = jwtProvider.generateAccessToken(username);
 
             response.setHeader("Authorization", "Bearer " + newAccessToken);
             filterChain.doFilter(request, response);
