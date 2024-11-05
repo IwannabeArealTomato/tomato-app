@@ -3,6 +3,7 @@ package com.sparta.realtomatoapp.menu.service;
 import com.sparta.realtomatoapp.menu.dto.*;
 import com.sparta.realtomatoapp.menu.entity.Menu;
 import com.sparta.realtomatoapp.menu.repository.MenuRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,13 +11,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MenuService {
 
     private final MenuRepository menuRepository;
-
-    public MenuService(MenuRepository menuRepository) {
-        this.menuRepository = menuRepository;
-    }
 
     @Transactional
     public MenuCreateResponseDto createMenu(MenuCreateRequestDto requestDto) {
@@ -49,7 +47,7 @@ public class MenuService {
                         menu.getMenuName(),
                         menu.getPrice()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
