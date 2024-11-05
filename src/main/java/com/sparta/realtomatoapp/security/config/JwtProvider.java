@@ -26,11 +26,11 @@ public class JwtProvider {
     }
 
     public String generateToken(String username) {
-        return createToken(username, jwtConfig.getAccessTokenExpireTime(), accessTokenKey);
+        return createToken(username, jwtConfig.getJwtAccessTokenExpireTime(), accessTokenKey);
     }
 
     public String generateRefreshToken(String username) {
-        return createToken(username, jwtConfig.getRefreshTokenExpireTime(), refreshTokenKey);
+        return createToken(username, jwtConfig.getJwtRefreshTokenExpireTime(), refreshTokenKey);
     }
 
     private String createToken(String username, long expireTime, Key key) {

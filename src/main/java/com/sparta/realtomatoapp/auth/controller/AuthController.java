@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -64,27 +65,29 @@ public class AuthController {
                 .data(Collections.singletonList(userResponseDto))
                 .build());
     }
+
     @PostMapping("/refresh")
-    public ResponseEntity<BaseResponseDto> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
+    public ResponseEntity<Map<String, Object>> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
         log.info("AuthController.refreshAccessToken");
 
         if (!userService.verifyRefreshToken(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN) // 변경
-                    .body(BaseResponseDto.baseResponseBuilder()
-                            .message("유효하지 않은 또는 만료된 Refresh Token입니다.")
-                            .build());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "유효하지 않은 또는 만료된 Refresh Token입니다."));
         }
 
         String newAccessToken = userService.refreshAccessToken(refreshToken);
+        String newRefreshToken = userService.generateNewRefreshTokenIfNeeded(refreshToken);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + newAccessToken);
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("message", "Access Token 재발급 성공");
+        responseBody.put("accessToken", newAccessToken);
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(BaseResponseDto.baseResponseBuilder()
-                        .message("Access Token 재발급 성공")
-                        .build());
+        // 만약 리프레쉬 토큰이 갱신된 경우, 바디에 포함
+        if (newRefreshToken != null) {
+            responseBody.put("refreshToken", newRefreshToken);
+        }
+
+        return ResponseEntity.ok(responseBody);
     }
 
     @PostMapping("/logout")

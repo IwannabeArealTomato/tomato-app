@@ -1,12 +1,10 @@
 package com.sparta.realtomatoapp.auth.controller.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.security.config.JwtConfig;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +31,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
                 parameter.getParameterType().equals(AuthUser.class);
     }
 
-
     @Override
     public AuthUser resolveArgument(@NonNull MethodParameter parameter, ModelAndViewContainer mavContainer,
                                     NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
@@ -44,15 +41,15 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getJwtAccessTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
                     .build()
-                    .parseSignedClaims(token);
+                    .parseClaimsJws(token)
+                    .getBody();
 
-            Claims payload = claimsJws.getPayload();
-            String email = payload.getSubject();
-            UserRole role = UserRole.valueOf(payload.get("role", String.class));
-            Long userId = payload.get("userId", Long.class);
+            String email = claims.getSubject();
+            UserRole role = UserRole.valueOf(claims.get("role", String.class));
+            Long userId = claims.get("userId", Long.class);
 
             return AuthUser.builder()
                     .email(email)

@@ -12,11 +12,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtConfig {
 
-    // 토큰의 만료 시간 (분 단위)
+    // 엑세스 토큰의 만료 시간 (분 단위)
     @Value("${access.token.expire.time}")
-    private Integer jwtaccesstokenexpiretime;
+    private Integer jwtAccessTokenExpireTime;
 
-    // 서명 키 (secret key)
+    // 엑세스 토큰 서명 키 (secret key)
     @Value("${access.token.secret.key}")
-    private String jwtaccessTokenSecretKey;
+    private String jwtAccessTokenSecretKey;
+
+    // 리프레쉬 토큰의 만료 시간 (분 단위)
+    @Value("${refresh.token.expire.time}")
+    private Integer jwtRefreshTokenExpireTime;
+
+    // 리프레쉬 토큰 서명 키 (secret key)
+    @Value("${refresh.token.secret.key}")
+    private String jwtRefreshTokenSecretKey;
 }
