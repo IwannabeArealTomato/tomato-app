@@ -32,8 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("Access Token verified successfully");
             filterChain.doFilter(request, response);
             return;
-        } else {
-            log.warn("Access token verification failed.");
         }
 
         String refreshToken = request.getHeader("Refresh-Token");
@@ -45,22 +43,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("New Access Token generated and set in header");
             filterChain.doFilter(request, response);
         } else {
-            log.warn("Token verification failed or Refresh token is invalid.");
+            log.warn("Access or Refresh token verification failed.");
             unAuthResponse(response);
+            return;
         }
     }
+
 
     private String extractToken(String bearerToken) {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             if (token.split("\\.").length == 3) { // JWT 형식 확인
+                log.info("Extracted token: {}", token);
                 return token;
             } else {
-                log.error("Invalid token format: {}", token);
+                log.error("Invalid token format detected in Authorization header: {}", token);
             }
+        } else {
+            log.warn("No Bearer token found or improper format in Authorization header: {}", bearerToken);
         }
         return null;
     }
+
 
     private void unAuthResponse(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
