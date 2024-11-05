@@ -11,5 +11,6 @@ public class RealtomatoappApplication {
     public static void main(String[] args) {
         SpringApplication.run(RealtomatoappApplication.class, args);
     }
-    
+
+
 }

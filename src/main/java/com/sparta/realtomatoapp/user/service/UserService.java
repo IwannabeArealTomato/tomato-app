@@ -1,0 +1,83 @@
+package com.sparta.realtomatoapp.user.service;
+
+import com.sparta.realtomatoapp.auth.dto.AuthInfo;
+import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
+import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
+import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
+import com.sparta.realtomatoapp.user.entity.UserStatus;
+import com.sparta.realtomatoapp.user.repository.UserRepository;
+import com.sparta.realtomatoapp.security.util.PasswordEncoder;
+import com.sparta.realtomatoapp.user.entity.User;
+import com.sparta.realtomatoapp.user.entity.UserRole;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoderUtil;
+    private final JwtProvider jwtProvider; // JWT 토큰 생성을 위해 필요
+
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public String loginUser(LoginRequestDto request) {
+        User user = findUserByEmail(request.getEmail()).orElseThrow(() ->
+                new IllegalArgumentException("이메일이 존재하지 않습니다."));
+
+        if (!passwordEncoderUtil.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // JWT 토큰 생성
+        AuthInfo authInfo = AuthInfo.builder()
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .build();
+
+        return jwtProvider.createJwtToken(authInfo);
+    }
+
+    public UserResponseDto registerUser(UserRegistrationRequestDto request) {
+        // 이메일 중복 체크
+        if (findUserByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoderUtil.encode(request.getPassword());
+
+        UserRole userRole = UserRole.valueOf(request.getUserRole());
+
+        // 기본 사용자 역할 설정
+        User user = User.builder()
+                .email(request.getEmail())
+                .userName(request.getUserName())
+                .password(encodedPassword)
+                .role(userRole)
+                .status(UserStatus.ACTIVE) // 활성화 상태
+                .address(request.getAddress())
+                .build();
+
+        userRepository.save(user);
+
+        return convertToDto(user);
+    }
+
+    public UserResponseDto convertToDto(User user) {
+        return UserResponseDto.builder()
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .modifiedAt(user.getModifiedAt())
+                .build();
+    }
+}
