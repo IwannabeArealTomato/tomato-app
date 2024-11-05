@@ -1,68 +1,92 @@
 package com.sparta.realtomatoapp.security.config;
 
-import com.sparta.realtomatoapp.user.dto.AuthUser;
-import com.sparta.realtomatoapp.user.entity.UserRole;
-import com.sparta.realtomatoapp.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.security.Key;
 import java.util.Date;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtProvider {
 
     private final JwtConfig jwtConfig;
+    private final Key accessTokenKey;
+    private final Key refreshTokenKey;
 
-    //JWT 토큰 생성
-    public String createJwtToken(AuthUser authUser) {
+    public JwtProvider(JwtConfig jwtConfig) {
+        this.jwtConfig = jwtConfig;
+        // HS512에 적합한 512비트 이상의 시크릿 키 자동 생성
+        this.accessTokenKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        this.refreshTokenKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    }
+
+    public String generateToken(String username) {
+        return createToken(username, jwtConfig.getAccessTokenExpireTime(), accessTokenKey);
+    }
+
+    public String generateRefreshToken(String username) {
+        return createToken(username, jwtConfig.getRefreshTokenExpireTime(), refreshTokenKey);
+    }
+
+    private String createToken(String username, long expireTime, Key key) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expireTime * 60 * 1000);
+
         return Jwts.builder()
-                .subject(authUser.getEmail())
-                .claim("role", authUser.getRole())
-                .claim("userId", authUser.getUserId())
-                .expiration(Date.from(Instant.now().plus(jwtConfig.getJwtaccesstokenexpiretime(), ChronoUnit.MINUTES)))
-                .issuedAt(Date.from(Instant.now()))
-                .signWith(Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes()), Jwts.SIG.HS256)
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key) // 자동 생성된 키 사용
                 .compact();
     }
 
-    //JWT 토큰 검증
-    public boolean verifyAccessToken(String jwtAccessToken) {
-        SecretKey secureAccessSecret = Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes());
+    // Access Token 유효성 검사
+    public boolean verifyAccessToken(String token) {
+        return verifyToken(token, accessTokenKey);
+    }
+
+    // Refresh Token 유효성 검사
+    public boolean verifyRefreshToken(String token) {
+        return verifyToken(token, refreshTokenKey);
+    }
+
+    // 토큰 유효성 검증 메서드 (공통 로직)
+    private boolean verifyToken(String token, Key key) {
         try {
-            Jwts.parser().verifyWith(secureAccessSecret).build().parseSignedClaims(jwtAccessToken);
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            log.error("Token verification failed: {}", ex.getMessage());
             return false;
         }
     }
 
-    // 토큰으로 부터 정보 가져오기
-    // todo: 혹시 불필요한 경우 지우는 것 고려
-    public AuthUser getCurrentRequestAuthInfo(String jwtAccessToken) {
-        SecretKey secureAccessSecret = Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes());
-        Jws<Claims> claimsJws = Jwts.parser().verifyWith(secureAccessSecret).build()
-                .parseSignedClaims(jwtAccessToken);
-
-        Claims payload = claimsJws.getPayload();
-        String email = payload.getSubject();
-        UserRole role = payload.get("role", UserRole.class);
-        Long userId = payload.get("userId", Long.class);
-
-        return AuthUser.builder()
-                .email(email)
-                .role(role)
-                .userId(userId)
-                .build();
+    // Access Token에서 사용자 이름 추출
+    public String getUserFromToken(String token) {
+        return getUserFromToken(token, accessTokenKey);
     }
 
+    // Refresh Token에서 사용자 이름 추출
+    public String getUserFromRefreshToken(String token) {
+        return getUserFromToken(token, refreshTokenKey);
+    }
+
+    // 사용자 이름 추출 메서드 (공통 로직)
+    private String getUserFromToken(String token, Key key) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
 }
