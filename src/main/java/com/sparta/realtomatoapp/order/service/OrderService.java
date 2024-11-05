@@ -2,10 +2,7 @@ package com.sparta.realtomatoapp.order.service;
 
 import com.sparta.realtomatoapp.menu.entity.Menu;
 import com.sparta.realtomatoapp.menu.repository.MenuRepository;
-import com.sparta.realtomatoapp.order.dto.OrderCreateRequestDto;
-import com.sparta.realtomatoapp.order.dto.OrderCreateResponseDto;
-import com.sparta.realtomatoapp.order.dto.OrderUpdateRequestDto;
-import com.sparta.realtomatoapp.order.dto.OrderUpdateResponseDto;
+import com.sparta.realtomatoapp.order.dto.*;
 import com.sparta.realtomatoapp.order.entity.Order;
 import com.sparta.realtomatoapp.order.entity.OrderStatus;
 import com.sparta.realtomatoapp.order.repository.OrderRepository;
@@ -67,5 +64,19 @@ public class OrderService {
                 .amount(order.getAmount())
                 .status(order.getStatus())
                 .build();
+    }
+
+    public OrderResponseDto getOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(()->new IllegalArgumentException("Order not found"));
+
+        return new OrderResponseDto(
+                order.getOrderId(),
+                order.getStore().getStoreId(),
+                order.getMenu().getMenuId(),
+                order.getUser().getUserId(),
+                order.getAmount(),
+                order.getStatus()
+        );
     }
 }

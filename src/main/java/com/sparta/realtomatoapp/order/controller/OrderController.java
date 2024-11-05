@@ -1,10 +1,7 @@
 package com.sparta.realtomatoapp.order.controller;
 
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
-import com.sparta.realtomatoapp.order.dto.OrderCreateRequestDto;
-import com.sparta.realtomatoapp.order.dto.OrderCreateResponseDto;
-import com.sparta.realtomatoapp.order.dto.OrderUpdateResponseDto;
-import com.sparta.realtomatoapp.order.dto.OrderUpdateRequestDto;
+import com.sparta.realtomatoapp.order.dto.*;
 import com.sparta.realtomatoapp.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +28,11 @@ public class OrderController {
         return ResponseEntity.ok(new DataResponseDto<>("주문수정완료", List.of(responsDto)));
     }
 
+    @GetMapping
+    public ResponseEntity<DataResponseDto<OrderResponseDto>> getOrder(@PathVariable Long orderId){
+        OrderResponseDto responseDto = orderService.getOrder(orderId);
+        return ResponseEntity.ok(new DataResponseDto<>("주문 단건 조회", List.of(responseDto)));
+    }
 
 }
 
