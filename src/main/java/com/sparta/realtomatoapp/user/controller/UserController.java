@@ -5,6 +5,8 @@ import com.sparta.realtomatoapp.common.dto.BaseResponseDto;
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
 import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
+import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
+import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import com.sparta.realtomatoapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -73,4 +75,22 @@ public class UserController {
                                 .build()
                 );
     }
+
+    @PutMapping
+    public ResponseEntity<DataResponseDto> updateUser(
+            @LoginUser AuthUser authUser,
+            @RequestBody UserUpdateRequestDto request) {
+
+        User updatedUser = userService.updateUser(authUser.getUserId(), request);
+
+        return ResponseEntity.ok()
+                .body(
+                        DataResponseDto.dataResponseBuilder()
+                                .message("수정 완료")
+                                .data(List.of(updatedUser))
+                                .build()
+                );
+    }
+
+
 }

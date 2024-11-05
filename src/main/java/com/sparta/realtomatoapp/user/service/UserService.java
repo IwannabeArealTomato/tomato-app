@@ -3,11 +3,14 @@ package com.sparta.realtomatoapp.user.service;
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
+import com.sparta.realtomatoapp.common.dto.DataResponseDto;
+import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.security.exception.CustomException;
 import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
+import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.user.entity.User;
@@ -15,7 +18,9 @@ import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +103,27 @@ public class UserService {
                         .modifiedAt(user.getModifiedAt())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public User updateUser(Long userId, UserUpdateRequestDto request) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoderUtil.matches(request.getPastPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        if (request.getUserName() != null) {
+            user.setUserName(request.getUserName());
+        }
+        if (request.getNewPassword() != null) {
+            user.setPassword(request.getNewPassword());
+        }
+        if (request.getAddress() != null) {
+            user.setAddress(request.getAddress());
+        }
+
+        return userRepository.save(user);
     }
 
     public UserResponseDto convertToDto(User user) {
