@@ -3,14 +3,13 @@ package com.sparta.realtomatoapp.user.service;
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
-import com.sparta.realtomatoapp.security.refreshToken.service.RefreshTokenService;
-import com.sparta.realtomatoapp.security.config.JwtConfig;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
+import com.sparta.realtomatoapp.security.refreshToken.service.RefreshTokenService;
+import com.sparta.realtomatoapp.user.entity.User;
+import com.sparta.realtomatoapp.user.entity.UserRole;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
-import com.sparta.realtomatoapp.user.entity.User;
-import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ public class UserService {
     private final PasswordEncoderUtil passwordEncoderUtil;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
-    private final JwtConfig jwtConfig; // JwtConfig 추가
 
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -38,10 +36,7 @@ public class UserService {
         log.info("Fetching user by email: {}", request.getEmail());
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> {
-                    log.error("User not found for email: {}", request.getEmail());
-                    return new IllegalArgumentException("이메일이 존재하지 않습니다.");
-                });
+                .orElseThrow(() -> new IllegalArgumentException("이메일이 존재하지 않습니다."));
 
         log.info("User found for email: {}", request.getEmail());
 
@@ -52,10 +47,14 @@ public class UserService {
 
         log.info("Password verified for email: {}", request.getEmail());
 
+        // Access Token 및 Refresh Token 생성
         String accessToken = jwtProvider.generateToken(user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
 
-        log.info("Tokens generated for email: {}", request.getEmail());
+        // Refresh Token을 데이터베이스에 저장
+        refreshTokenService.createAndStoreRefreshToken(user.getEmail(), refreshToken);
+
+        log.info("Tokens generated and Refresh Token stored for email: {}", request.getEmail());
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
@@ -63,7 +62,6 @@ public class UserService {
 
         return tokens;
     }
-
 
     public UserResponseDto registerUser(UserRegistrationRequestDto request) {
         if (findUserByEmail(request.getEmail()).isPresent()) {

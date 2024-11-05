@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,15 +14,15 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    // Refresh Token 생성
-    public RefreshToken createRefreshToken(String userEmail, long expiryDuration) {
+    // Refresh Token 생성 및 데이터베이스에 저장
+    public void createAndStoreRefreshToken(String userEmail, String token) {
         RefreshToken refreshToken = RefreshToken.builder()
-                .token(UUID.randomUUID().toString())
+                .token(token)
                 .userEmail(userEmail)
-                .expiryDate(Instant.now().plusMillis(expiryDuration))
+                .expiryDate(Instant.now().plusMillis(1440 * 60 * 1000)) // 토큰 만료 시간 설정
                 .build();
 
-        return refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(refreshToken);
     }
 
     // Refresh Token 유효성 검사
@@ -39,6 +38,6 @@ public class RefreshTokenService {
 
     // 사용자 이메일로 Refresh Token 조회
     public Optional<RefreshToken> findTokenByUserEmail(String userEmail) {
-        return refreshTokenRepository.findByToken(userEmail);
+        return refreshTokenRepository.findByUserEmail(userEmail);
     }
 }

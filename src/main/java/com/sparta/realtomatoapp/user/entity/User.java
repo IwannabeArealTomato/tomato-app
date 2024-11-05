@@ -37,7 +37,4 @@ public class User extends ModifiedAuditingEntity {
 
     @Column(nullable = false)
     private String address;
-
-    @Column(nullable = true) // refreshToken을 nullable로 변경
-    private String refreshToken;
 }

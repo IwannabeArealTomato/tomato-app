@@ -35,7 +35,7 @@ public class AuthController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Bearer " + accessToken);
-            headers.add("Refresh-Token", refreshToken);
+            headers.add("RefreshToken", refreshToken);
 
             log.info("Login successful for email: {}", request.getEmail());
 
