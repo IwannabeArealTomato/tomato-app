@@ -1,5 +1,7 @@
-package com.sparta.realtomatoapp.security.refreshToken;
+package com.sparta.realtomatoapp.security.refreshToken.service;
 
+import com.sparta.realtomatoapp.security.refreshToken.entity.RefreshToken;
+import com.sparta.realtomatoapp.security.refreshToken.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

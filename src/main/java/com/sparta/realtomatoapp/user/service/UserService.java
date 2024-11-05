@@ -3,7 +3,7 @@ package com.sparta.realtomatoapp.user.service;
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
-import com.sparta.realtomatoapp.security.refreshToken.RefreshTokenService;
+import com.sparta.realtomatoapp.security.refreshToken.service.RefreshTokenService;
 import com.sparta.realtomatoapp.security.config.JwtConfig;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.user.entity.UserStatus;

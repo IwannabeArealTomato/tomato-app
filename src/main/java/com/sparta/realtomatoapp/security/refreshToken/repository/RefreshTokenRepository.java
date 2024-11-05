@@ -1,5 +1,6 @@
-package com.sparta.realtomatoapp.security.refreshToken;
+package com.sparta.realtomatoapp.security.refreshToken.repository;
 
+import com.sparta.realtomatoapp.security.refreshToken.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

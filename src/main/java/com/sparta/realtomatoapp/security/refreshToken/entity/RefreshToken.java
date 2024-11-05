@@ -1,4 +1,4 @@
-package com.sparta.realtomatoapp.security.refreshToken;
+package com.sparta.realtomatoapp.security.refreshToken.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
