@@ -8,6 +8,7 @@ import com.sparta.realtomatoapp.security.exception.CustomException;
 import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
+import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.user.entity.User;
@@ -98,6 +99,27 @@ public class UserService {
                         .modifiedAt(user.getModifiedAt())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public User updateUser(Long userId, UserUpdateRequestDto request) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoderUtil.matches(request.getPastPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        if (request.getUserName() != null) {
+            user.setUserName(request.getUserName());
+        }
+        if (request.getNewPassword() != null) {
+            user.setPassword(request.getNewPassword());
+        }
+        if (request.getAddress() != null) {
+            user.setAddress(request.getAddress());
+        }
+
+        return userRepository.save(user);
     }
 
     public UserResponseDto convertToDto(User user) {
