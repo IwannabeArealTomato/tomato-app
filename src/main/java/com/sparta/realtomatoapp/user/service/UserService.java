@@ -122,6 +122,17 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void deactivateUser(Long userId, String password) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoderUtil.matches(password, user.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        userRepository.deleteById(userId);
+    }
+
     public UserResponseDto convertToDto(User user) {
         return UserResponseDto.builder()
                 .userId(user.getUserId())
