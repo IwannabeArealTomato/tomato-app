@@ -3,7 +3,6 @@ package com.sparta.realtomatoapp.user.dto;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Builder

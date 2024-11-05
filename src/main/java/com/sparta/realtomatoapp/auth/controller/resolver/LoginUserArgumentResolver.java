@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -19,14 +20,12 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtConfig jwtConfig;
-    private final ObjectMapper objectMapper;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -36,8 +35,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
 
     @Override
-    public AuthUser resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public AuthUser resolveArgument(@NonNull MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                    NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String header = request.getHeader("Authorization");

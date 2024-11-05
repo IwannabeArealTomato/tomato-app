@@ -22,7 +22,6 @@ import java.util.Date;
 public class JwtProvider {
 
     private final JwtConfig jwtConfig;
-    private final UserRepository userRepository;
 
     //JWT 토큰 생성
     public String createJwtToken(AuthUser authUser) {
