@@ -36,10 +36,25 @@ public class JwtProvider {
     }
 
     //JWT 토큰 검증
+    // Access Token 유효성 검사
     public boolean verifyAccessToken(String jwtAccessToken) {
-        SecretKey secureAccessSecret = Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes());
+        SecretKey accessTokenKey = Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes());
+        return verifyToken(jwtAccessToken, accessTokenKey);
+    }
+
+    // Refresh Token 유효성 검사
+    public boolean verifyRefreshToken(String jwtRefreshToken) {
+        SecretKey refreshTokenKey = Keys.hmacShaKeyFor(jwtConfig.getJwtRefreshTokenSecretKey().getBytes());
+        return verifyToken(jwtRefreshToken, refreshTokenKey);
+    }
+
+    private boolean verifyToken(String jwtAccessToken, SecretKey secretKey) {
+//        SecretKey secureAccessSecret = Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes());
         try {
-            Jwts.parser().verifyWith(secureAccessSecret).build().parseSignedClaims(jwtAccessToken);
+            Jwts.parser()
+                    .verifyWith(secureAccessSecret)
+                    .build()
+                    .parseSignedClaims(jwtAccessToken);
             return true;
         } catch (Exception e) {
             return false;
