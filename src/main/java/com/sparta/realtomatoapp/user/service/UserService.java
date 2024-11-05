@@ -3,8 +3,6 @@ package com.sparta.realtomatoapp.user.service;
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
-import com.sparta.realtomatoapp.common.dto.DataResponseDto;
-import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.security.exception.CustomException;
 import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
@@ -18,9 +16,7 @@ import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.Optional;
