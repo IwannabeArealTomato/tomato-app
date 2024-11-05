@@ -1,8 +1,8 @@
 package com.sparta.realtomatoapp.auth.controller.resolver;
 
 import com.sparta.realtomatoapp.common.entity.LoginUser;
-import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.security.config.JwtConfig;
+import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
