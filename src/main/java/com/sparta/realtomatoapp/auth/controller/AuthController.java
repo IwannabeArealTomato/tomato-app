@@ -64,12 +64,13 @@ public class AuthController {
                 .data(Collections.singletonList(userResponseDto))
                 .build());
     }
+
     @PostMapping("/refresh")
     public ResponseEntity<BaseResponseDto> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
         log.info("AuthController.refreshAccessToken");
 
         if (!userService.verifyRefreshToken(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN) // 변경
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(BaseResponseDto.baseResponseBuilder()
                             .message("유효하지 않은 또는 만료된 Refresh Token입니다.")
                             .build());
