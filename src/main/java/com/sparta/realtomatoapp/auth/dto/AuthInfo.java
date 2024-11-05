@@ -8,4 +8,5 @@ import lombok.Getter;
 public class AuthInfo {
     private String email;
     private String role;
+    private String userId;
 }

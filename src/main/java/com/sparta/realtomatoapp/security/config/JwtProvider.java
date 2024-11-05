@@ -34,6 +34,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .subject(authInfo.getEmail())
                 .claim("role", authInfo.getRole())
+                .claim("userId", authInfo.getUserId())
                 .expiration(Date.from(Instant.now().plus(jwtConfig.getJwtaccesstokenexpiretime(), ChronoUnit.MINUTES)))
                 .issuedAt(Date.from(Instant.now()))
                 .signWith(Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes()), Jwts.SIG.HS256)
@@ -60,35 +61,13 @@ public class JwtProvider {
         Claims payload = claimsJws.getPayload();
         String email = payload.getSubject();
         String role = payload.get("role", String.class);
+        String userId = payload.get("userId", String.class);
 
         return AuthInfo.builder()
                 .email(email)
                 .role(role)
+                .userId(userId)
                 .build();
-    }
-
-    // 토큰으로 유저를 반환
-    private User getCurrentRequestUser(String jwtAccessToken) {
-        AuthInfo currentRequestAuthInfo = getCurrentRequestAuthInfo(jwtAccessToken);
-        Optional<User> byEmail = userRepository.findByEmail(currentRequestAuthInfo.getEmail());
-        return byEmail.get();
-    }
-
-    //토큰으로 유저를 반환
-    public User getCurrentRequestUser() {
-        HttpServletRequest request = null;
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes instanceof ServletRequestAttributes) {
-            request = ((ServletRequestAttributes) requestAttributes).getRequest();
-        }
-
-        String bearerToken = request.getHeader("Authorization");
-        String token = null;
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            token = bearerToken.substring("Bearer ".length()); // "Bearer "의 길이가 7이므로 그 뒤의 문자열을 반환
-        }
-
-        return getCurrentRequestUser(token);
     }
 
 }
