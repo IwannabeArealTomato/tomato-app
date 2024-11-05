@@ -34,5 +34,11 @@ public class OrderController {
         return ResponseEntity.ok(new DataResponseDto<>("주문 단건 조회", List.of(responseDto)));
     }
 
+    @GetMapping
+    public ResponseEntity<DataResponseDto<OrderResponseDto>> getAllOrder(){
+        List<OrderResponseDto> responseDto = orderService.getAllOrder();
+        return ResponseEntity.ok(new DataResponseDto<>("주문 다건 조회", responseDto));
+    }
+
 }
 
