@@ -50,7 +50,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<DataResponseDto> getUserInfo(@PathVariable Long userId) {
 
-        UserResponseDto userResponse = userService.getUserById(userId);
+        User userResponse = userService.getUserById(userId);
         return ResponseEntity.ok()
                 .body(
                         DataResponseDto.dataResponseBuilder()

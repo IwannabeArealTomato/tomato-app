@@ -78,11 +78,11 @@ public class UserService {
         return convertToDto(user);
     }
 
-    public UserResponseDto getUserById(Long userId) {
+    public User getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        return convertToDto(user);
+        return user;
     }
 
     public List<UserResponseDto> getAllUsers(int page, int size) {
