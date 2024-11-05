@@ -6,10 +6,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OrderCreateResponseDto {
+public class OrderUpdateResponsDto {
+    private Long orderId;
     private Long storeId;
     private Long menuId;
     private int amount;
     private OrderStatus status;
 }
-

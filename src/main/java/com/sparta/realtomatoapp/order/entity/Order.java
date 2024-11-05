@@ -40,4 +40,8 @@ public class Order extends BaseAuditingEntity {
     @ManyToOne
     @JoinColumn(name = "menuId")
     private Menu menu;
+
+    public void updateOrder(OrderStatus status) {
+        this.status = status;
+    }
 }
