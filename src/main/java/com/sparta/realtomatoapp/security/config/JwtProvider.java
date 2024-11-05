@@ -83,4 +83,14 @@ public class JwtProvider {
 
         return claims.getSubject();
     }
+
+    // 추가된 메서드: 토큰의 Claims 반환
+    public Claims getClaimsFromToken(String token, boolean isAccessToken) {
+        Key key = isAccessToken ? accessTokenKey : refreshTokenKey;
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 }

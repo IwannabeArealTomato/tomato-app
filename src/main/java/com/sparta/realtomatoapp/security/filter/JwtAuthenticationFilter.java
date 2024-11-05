@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
 @Slf4j
@@ -22,20 +21,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+
         if (requestURI.contains("/api/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String bearerToken = request.getHeader("Authorization");
-        String token = null;
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            token = bearerToken.substring("Bearer ".length());
-        }
-
-        if (token != null && jwtProvider.verifyAccessToken(token)) {
+        String accessToken = extractToken(request.getHeader("Authorization"));
+        if (accessToken != null && jwtProvider.verifyAccessToken(accessToken)) {
+            log.info("Access Token verified successfully");
             filterChain.doFilter(request, response);
             return;
+        } else {
+            log.warn("Access token verification failed.");
         }
 
         String refreshToken = request.getHeader("Refresh-Token");
@@ -44,17 +42,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String newAccessToken = jwtProvider.generateAccessToken(username);
 
             response.setHeader("Authorization", "Bearer " + newAccessToken);
+            log.info("New Access Token generated and set in header");
             filterChain.doFilter(request, response);
         } else {
+            log.warn("Token verification failed or Refresh token is invalid.");
             unAuthResponse(response);
         }
+    }
+
+    private String extractToken(String bearerToken) {
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            if (token.split("\\.").length == 3) { // JWT 형식 확인
+                return token;
+            } else {
+                log.error("Invalid token format: {}", token);
+            }
+        }
+        return null;
     }
 
     private void unAuthResponse(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        String jsonResponse = "{\"error\": \"토큰이 만료되었습니다.\"}";
+        String jsonResponse = "{\"error\": \"토큰이 만료되었거나 유효하지 않습니다.\"}";
         response.getWriter().write(jsonResponse);
     }
 }

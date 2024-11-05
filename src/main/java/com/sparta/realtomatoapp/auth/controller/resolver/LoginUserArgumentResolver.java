@@ -2,14 +2,10 @@ package com.sparta.realtomatoapp.auth.controller.resolver;
 
 import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
-import com.sparta.realtomatoapp.security.config.JwtConfig;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -18,13 +14,11 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.nio.charset.StandardCharsets;
-
 @Component
 @RequiredArgsConstructor
 public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final JwtConfig jwtConfig;
+    private final JwtProvider jwtProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -33,7 +27,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     }
 
     @Override
-    public AuthUser resolveArgument(@NonNull MethodParameter parameter, ModelAndViewContainer mavContainer,
+    public AuthUser resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                     NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
@@ -42,22 +36,21 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getAccessTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
-                    .build()
-                    .parseClaimsJws(token);
+            // JWT 토큰 검증
+            if (jwtProvider.verifyAccessToken(token)) {
+                Claims claims = jwtProvider.getClaimsFromToken(token, true); // Access Token의 경우 true 전달
 
-            Claims payload = claimsJws.getBody(); // getBody()로 Claims 가져오기
-            String email = payload.getSubject();
-            UserRole role = UserRole.valueOf(payload.get("role", String.class));
-            Long userId = payload.get("userId", Long.class);
+                String email = claims.getSubject();
+                UserRole role = UserRole.valueOf(claims.get("role", String.class));
+                Long userId = claims.get("userId", Long.class);
 
-            return AuthUser.builder()
-                    .email(email)
-                    .role(role)
-                    .userId(userId)
-                    .build();
+                return AuthUser.builder()
+                        .email(email)
+                        .role(role)
+                        .userId(userId)
+                        .build();
+            }
         }
-        return null;
+        return null; // 토큰이 없거나 유효하지 않은 경우 null 반환
     }
 }
