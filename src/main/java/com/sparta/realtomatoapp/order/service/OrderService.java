@@ -96,12 +96,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDeleteResponseDto deleteOrder(Long orderId) {
+    public void deleteOrder(Long orderId) {
         if(!orderRepository.existsById(orderId)) {
             throw new IllegalArgumentException("Order not found");
         }
         orderRepository.deleteById(orderId);
-        return new OrderDeleteResponseDto("주문 삭제 완료");
     }
-
 }

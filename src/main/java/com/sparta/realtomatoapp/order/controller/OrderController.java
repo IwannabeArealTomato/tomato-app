@@ -43,8 +43,8 @@ public class OrderController {
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<BaseResponseDto> deleteOrder(@PathVariable Long orderId){
-        OrderDeleteResponseDto responseDto = orderService.deleteOrder(orderId);
-        return ResponseEntity.ok(BaseResponseDto.baseResponseBuilder().message(responseDto.getMessage()).build());
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.ok(BaseResponseDto.baseResponseBuilder().message("주문 삭제 성공").build());
     }
 
 }
