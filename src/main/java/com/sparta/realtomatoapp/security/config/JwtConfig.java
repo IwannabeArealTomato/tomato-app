@@ -3,6 +3,7 @@ package com.sparta.realtomatoapp.security.config;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtConfig {
 
-    //토큰의 만료 시간(5분)
-    private final Integer accessTokenExpiration = 5;
+    // 토큰의 만료 시간 (분 단위)
+    @Value("${acess.token.expire.time}")
+    private Integer jwtaccesstokenexpiretime;
 
-    // 서명 키(secret key),
-    private final String accessTokenSecretKey = "access_token_secret_access_token_secret_access_token_secret";
+    // 서명 키 (secret key)
+    @Value("${acess.token.secret.key}")
+    private String jwtaccessTokenSecretKey;
 }
