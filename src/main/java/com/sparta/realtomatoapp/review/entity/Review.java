@@ -23,7 +23,7 @@ public class Review extends BaseAuditingEntity {
     private String comment;
 
     @Column(nullable = false)
-    private Integer scope;
+    private Integer rating;
 
     @ManyToOne
     @JoinColumn(name = "orderId")
