@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -78,5 +80,18 @@ public class OrderService {
                 order.getAmount(),
                 order.getStatus()
         );
+    }
+
+    public List<OrderResponseDto> getAllOrder() {
+        return orderRepository.findAll().stream()
+                .map(order -> new OrderResponseDto(
+                        order.getOrderId(),
+                        order.getStore().getStoreId(),
+                        order.getMenu().getMenuId(),
+                        order.getUser().getUserId(),
+                        order.getAmount(),
+                        order.getStatus()
+                ))
+                .toList();
     }
 }
