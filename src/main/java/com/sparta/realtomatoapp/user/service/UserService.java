@@ -1,13 +1,13 @@
 package com.sparta.realtomatoapp.user.service;
 
-import com.sparta.realtomatoapp.auth.dto.AuthInfo;
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
+import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
+import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
-import com.sparta.realtomatoapp.security.util.PasswordEncoder;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoderUtil;
+    private final PasswordEncoderUtil passwordEncoderUtil;
     private final JwtProvider jwtProvider; // JWT 토큰 생성을 위해 필요
 
     public Optional<User> findUserByEmail(String email) {
@@ -36,12 +36,13 @@ public class UserService {
         }
 
         // JWT 토큰 생성
-        AuthInfo authInfo = AuthInfo.builder()
+        AuthUser authUser = AuthUser.builder()
+                .userId(user.getUserId())
                 .email(user.getEmail())
-                .role(user.getRole().name())
+                .role(user.getRole())
                 .build();
 
-        return jwtProvider.createJwtToken(authInfo);
+        return jwtProvider.createJwtToken(authUser);
     }
 
     public UserResponseDto registerUser(UserRegistrationRequestDto request) {

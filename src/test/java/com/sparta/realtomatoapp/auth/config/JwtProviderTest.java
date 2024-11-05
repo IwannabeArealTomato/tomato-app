@@ -1,8 +1,7 @@
 package com.sparta.realtomatoapp.auth.config;
 
-import com.sparta.realtomatoapp.auth.dto.AuthInfo;
-
 import com.sparta.realtomatoapp.security.config.JwtProvider;
+import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,18 +19,18 @@ class JwtProviderTest {
     void test_jwtProvider() {
         //given
         String mail = "test@test.com";
-        String role = String.valueOf(UserRole.GUEST);
+        UserRole role = UserRole.GUEST;
 
-        AuthInfo authInfo = AuthInfo.builder()
+        AuthUser authUser = AuthUser.builder()
                 .email(mail)
                 .role(role)
                 .build();
 
         //when
-        String jwtToken = jwtProvider.createJwtToken(authInfo);
+        String jwtToken = jwtProvider.createJwtToken(authUser);
 
         //then
-        AuthInfo currentRequestAuthInfo = jwtProvider.getCurrentRequestAuthInfo(jwtToken);
+        AuthUser currentRequestAuthInfo = jwtProvider.getCurrentRequestAuthInfo(jwtToken);
 
         Assertions.assertThat(jwtToken).isNotNull();
         Assertions.assertThat(jwtProvider.verifyAccessToken(jwtToken)).isTrue();
