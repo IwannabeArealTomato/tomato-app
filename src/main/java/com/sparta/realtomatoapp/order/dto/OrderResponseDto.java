@@ -1,15 +1,18 @@
 package com.sparta.realtomatoapp.order.dto;
 
 import com.sparta.realtomatoapp.order.entity.OrderStatus;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-public class OrderCreateResponseDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderResponseDto {
+    private Long orderId;
     private Long storeId;
+    private Long userId;
     private Long menuId;
     private int amount;
     private OrderStatus status;
 }
-
