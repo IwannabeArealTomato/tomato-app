@@ -1,5 +1,6 @@
 package com.sparta.realtomatoapp.order.controller;
 
+import com.sparta.realtomatoapp.common.dto.BaseResponseDto;
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
 import com.sparta.realtomatoapp.order.dto.*;
 import com.sparta.realtomatoapp.order.service.OrderService;
@@ -28,7 +29,7 @@ public class OrderController {
         return ResponseEntity.ok(new DataResponseDto<>("주문수정완료", List.of(responsDto)));
     }
 
-    @GetMapping
+    @GetMapping("/{orderId}")
     public ResponseEntity<DataResponseDto<OrderResponseDto>> getOrder(@PathVariable Long orderId){
         OrderResponseDto responseDto = orderService.getOrder(orderId);
         return ResponseEntity.ok(new DataResponseDto<>("주문 단건 조회", List.of(responseDto)));
@@ -38,6 +39,12 @@ public class OrderController {
     public ResponseEntity<DataResponseDto<OrderResponseDto>> getAllOrder(){
         List<OrderResponseDto> responseDto = orderService.getAllOrder();
         return ResponseEntity.ok(new DataResponseDto<>("주문 다건 조회", responseDto));
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<BaseResponseDto> deleteOrder(@PathVariable Long orderId){
+        OrderDeleteResponseDto responseDto = orderService.deleteOrder(orderId);
+        return ResponseEntity.ok(BaseResponseDto.baseResponseBuilder().message(responseDto.getMessage()).build());
     }
 
 }
