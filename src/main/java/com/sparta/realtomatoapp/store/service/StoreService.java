@@ -3,6 +3,7 @@ package com.sparta.realtomatoapp.store.service;
 import com.sparta.realtomatoapp.store.dto.*;
 import com.sparta.realtomatoapp.store.entity.Store;
 import com.sparta.realtomatoapp.store.repository.StoreRepository;
+import com.sparta.realtomatoapp.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ public class StoreService {
     @Transactional
     public StoreCreateResponseDto createStore(StoreCreateRequestDto requestDto) {
         Store store = Store.builder()
+                .user(User.builder().userId(1L).build())
                 .storeName(requestDto.getStoreName())
                 .openTime(requestDto.getOpenTime())
                 .closeTime(requestDto.getCloseTime())

@@ -2,6 +2,7 @@ package com.sparta.realtomatoapp.review.entity;
 
 import com.sparta.realtomatoapp.common.entity.BaseAuditingEntity;
 import com.sparta.realtomatoapp.order.entity.Order;
+import com.sparta.realtomatoapp.review.dto.ReviewCreateResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,9 +24,19 @@ public class Review extends BaseAuditingEntity {
     private String comment;
 
     @Column(nullable = false)
-    private Integer scope;
+    private Integer rating;
 
     @ManyToOne
     @JoinColumn(name = "orderId")
     private Order order;
+
+    public ReviewCreateResponseDto toResponseDto(Order order) {
+        return ReviewCreateResponseDto
+                .builder()
+                .orderId(order.getOrderId())
+                .reviewId(reviewId)
+                .comment(comment)
+                .rating(rating)
+                .build();
+    }
 }
