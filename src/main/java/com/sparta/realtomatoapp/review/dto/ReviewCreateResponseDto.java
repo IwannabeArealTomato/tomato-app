@@ -1,8 +1,11 @@
 package com.sparta.realtomatoapp.review.dto;
 
-import lombok.Builder;
+import lombok.*;
 
 @Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReviewCreateResponseDto {
 
 private Long reviewId;

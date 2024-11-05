@@ -23,8 +23,10 @@ public class ReviewController {
     // TODO : 리뷰 CRUD
     //리뷰 생성
     @PostMapping("/order/{orderId}/review")
-    public ResponseEntity<DataResponseDto<ReviewCreateResponseDto>> creatReview(ReviewCreateRequestDto requestDto) {
-        ReviewCreateResponseDto reviewData = reviewService.createReview(requestDto);
+    public ResponseEntity<DataResponseDto<ReviewCreateResponseDto>> creatReview(
+            @PathVariable(name = "orderId") Long orderId,
+            @RequestBody ReviewCreateRequestDto requestDto) {
+        ReviewCreateResponseDto reviewData = reviewService.createReview(orderId,requestDto);
         return ResponseEntity.ok(new DataResponseDto<>("리뷰 생성 성공", List.of(reviewData)));
     }
 

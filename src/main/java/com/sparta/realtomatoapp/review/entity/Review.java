@@ -30,9 +30,10 @@ public class Review extends BaseAuditingEntity {
     @JoinColumn(name = "orderId")
     private Order order;
 
-    public ReviewCreateResponseDto toResponseDto() {
+    public ReviewCreateResponseDto toResponseDto(Order order) {
         return ReviewCreateResponseDto
                 .builder()
+                .orderId(order.getOrderId())
                 .reviewId(reviewId)
                 .comment(comment)
                 .rating(rating)
