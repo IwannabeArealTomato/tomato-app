@@ -7,6 +7,8 @@ import com.sparta.realtomatoapp.review.dto.ReviewCreateResponseDto;
 import com.sparta.realtomatoapp.review.dto.ReviewDeleteResponseDto;
 import com.sparta.realtomatoapp.review.dto.ReviewListResponseDto;
 import com.sparta.realtomatoapp.review.service.ReviewService;
+import com.sparta.realtomatoapp.security.Authorized;
+import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +24,12 @@ public class ReviewController {
 
     // TODO : 리뷰 CRUD
     //리뷰 생성
+    @Authorized(UserRole.ADMIN)
     @PostMapping("/order/{orderId}/review")
     public ResponseEntity<DataResponseDto<ReviewCreateResponseDto>> creatReview(
             @PathVariable(name = "orderId") Long orderId,
-            @RequestBody ReviewCreateRequestDto requestDto) {
+            @RequestBody ReviewCreateRequestDto requestDto
+    ) {
         ReviewCreateResponseDto reviewData = reviewService.createReview(orderId,requestDto);
         return ResponseEntity.ok(new DataResponseDto<>("리뷰 생성 성공", List.of(reviewData)));
     }
