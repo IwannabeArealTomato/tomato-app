@@ -4,6 +4,8 @@ import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
+import com.sparta.realtomatoapp.security.exception.CustomException;
+import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.entity.UserStatus;
@@ -67,6 +69,13 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+
+        return convertToDto(user);
+    }
+
+    public UserResponseDto getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return convertToDto(user);
     }

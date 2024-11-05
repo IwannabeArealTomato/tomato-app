@@ -57,9 +57,11 @@ public class AuthController {
         // 사용자 등록
         UserResponseDto userResponseDto = userService.registerUser(request);
 
-        return ResponseEntity.ok(DataResponseDto.<UserResponseDto>dataResponseBuilder()
+        return ResponseEntity.ok(
+                DataResponseDto.<UserResponseDto>dataResponseBuilder()
                 .message("회원 가입 성공")
                 .data(Collections.singletonList(userResponseDto))
-                .build());
+                .build()
+        );
     }
 }
