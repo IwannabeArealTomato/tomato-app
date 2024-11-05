@@ -9,12 +9,10 @@ import com.sparta.realtomatoapp.user.entity.UserRole;
 import com.sparta.realtomatoapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,8 +26,8 @@ public class UserController {
      * @param authUser request header에 포함된 jwt 토큰
      * @return ResponseEntity
      */
-    @GetMapping
-    public ResponseEntity<BaseResponseDto> exampleResolver(@LoginUser AuthUser authUser) {
+    @GetMapping("test")
+    public ResponseEntity<BaseResponseDto> getUserInfo(@LoginUser AuthUser authUser) {
         if (authUser != null) {
             String email = authUser.getEmail();
             UserRole role = authUser.getRole();
@@ -59,4 +57,20 @@ public class UserController {
                 );
     }
 
+    // 회원 다건 조회
+    @GetMapping
+    public ResponseEntity<DataResponseDto> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<UserResponseDto> users = userService.getAllUsers(page, size);
+
+        return ResponseEntity.ok()
+                .body(
+                        DataResponseDto.dataResponseBuilder()
+                                .message("조회 성공")
+                                .data(Collections.singletonList(users))
+                                .build()
+                );
+    }
 }

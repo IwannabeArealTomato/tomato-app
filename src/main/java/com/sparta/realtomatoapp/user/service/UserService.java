@@ -15,7 +15,9 @@ import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +80,21 @@ public class UserService {
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return convertToDto(user);
+    }
+
+    public List<UserResponseDto> getAllUsers(int page, int size) {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user -> UserResponseDto.builder()
+                        .userId(user.getUserId())
+                        .userName(user.getUserName())
+                        .email(user.getEmail())
+                        .role(user.getRole())
+                        .createdAt(user.getCreatedAt())
+                        .modifiedAt(user.getModifiedAt())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public UserResponseDto convertToDto(User user) {
