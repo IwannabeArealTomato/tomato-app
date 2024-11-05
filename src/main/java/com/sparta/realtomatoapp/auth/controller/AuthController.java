@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -60,7 +61,7 @@ public class AuthController {
         return ResponseEntity.ok(
                 DataResponseDto.<UserResponseDto>dataResponseBuilder()
                 .message("회원 가입 성공")
-                .data(Collections.singletonList(userResponseDto))
+                .data(List.of(userResponseDto))
                 .build()
         );
     }

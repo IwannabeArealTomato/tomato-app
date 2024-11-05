@@ -13,6 +13,8 @@ import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -83,9 +85,10 @@ public class UserService {
     }
 
     public List<UserResponseDto> getAllUsers(int page, int size) {
-        List<User> users = userRepository.findAll();
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findAll(pageRequest);
 
-        return users.stream()
+        return userPage.stream()
                 .map(user -> UserResponseDto.builder()
                         .userId(user.getUserId())
                         .userName(user.getUserName())
