@@ -94,4 +94,12 @@ public class OrderService {
                 ))
                 .toList();
     }
+
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        if(!orderRepository.existsById(orderId)) {
+            throw new IllegalArgumentException("Order not found");
+        }
+        orderRepository.deleteById(orderId);
+    }
 }
