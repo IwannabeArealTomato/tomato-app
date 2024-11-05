@@ -7,6 +7,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class OrderUpdateRequestDto {
-    private Long orderId;
     private OrderStatus status;
 }

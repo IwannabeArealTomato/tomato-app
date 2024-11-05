@@ -3,7 +3,7 @@ package com.sparta.realtomatoapp.order.controller;
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
 import com.sparta.realtomatoapp.order.dto.OrderCreateRequestDto;
 import com.sparta.realtomatoapp.order.dto.OrderCreateResponseDto;
-import com.sparta.realtomatoapp.order.dto.OrderUpdateResponsDto;
+import com.sparta.realtomatoapp.order.dto.OrderUpdateResponseDto;
 import com.sparta.realtomatoapp.order.dto.OrderUpdateRequestDto;
 import com.sparta.realtomatoapp.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<DataResponseDto<OrderUpdateResponsDto>> updateOrder(@RequestBody OrderUpdateRequestDto requestDto){
-        OrderUpdateResponsDto responsDto = orderService.updateOrder(requestDto);
+    public ResponseEntity<DataResponseDto<OrderUpdateResponseDto>> updateOrder(@PathVariable Long orderId, @RequestBody OrderUpdateRequestDto requestDto){
+        OrderUpdateResponseDto responsDto = orderService.updateOrder(orderId, requestDto);
         return ResponseEntity.ok(new DataResponseDto<>("주문수정완료", List.of(responsDto)));
     }
 

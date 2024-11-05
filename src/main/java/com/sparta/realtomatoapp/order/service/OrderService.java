@@ -5,7 +5,7 @@ import com.sparta.realtomatoapp.menu.repository.MenuRepository;
 import com.sparta.realtomatoapp.order.dto.OrderCreateRequestDto;
 import com.sparta.realtomatoapp.order.dto.OrderCreateResponseDto;
 import com.sparta.realtomatoapp.order.dto.OrderUpdateRequestDto;
-import com.sparta.realtomatoapp.order.dto.OrderUpdateResponsDto;
+import com.sparta.realtomatoapp.order.dto.OrderUpdateResponseDto;
 import com.sparta.realtomatoapp.order.entity.Order;
 import com.sparta.realtomatoapp.order.entity.OrderStatus;
 import com.sparta.realtomatoapp.order.repository.OrderRepository;
@@ -15,6 +15,7 @@ import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,15 +54,14 @@ public class OrderService {
                 .build();
     }
 
-    public OrderUpdateResponsDto updateOrder(OrderUpdateRequestDto requestDto) {
-        Order order = orderRepository.findById(requestDto.getOrderId())
+    @Transactional
+    public OrderUpdateResponseDto updateOrder(Long orderId, OrderUpdateRequestDto requestDto) {
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(()->new IllegalArgumentException("Order not found"));
 
         order.updateOrder(requestDto.getStatus());
-        orderRepository.save(order);
 
-        return OrderUpdateResponsDto.builder()
-                .orderId(order.getOrderId())
+        return OrderUpdateResponseDto.builder()
                 .storeId(order.getStore().getStoreId())
                 .menuId(order.getMenu().getMenuId())
                 .amount(order.getAmount())

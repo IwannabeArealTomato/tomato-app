@@ -6,8 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OrderUpdateResponsDto {
-    private Long orderId;
+public class OrderUpdateResponseDto {
     private Long storeId;
     private Long menuId;
     private int amount;
