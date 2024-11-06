@@ -2,12 +2,14 @@ package com.sparta.realtomatoapp.review.controller;
 
 import com.sparta.realtomatoapp.common.dto.BaseResponseDto;
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
+import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.review.dto.ReviewCreateRequestDto;
 import com.sparta.realtomatoapp.review.dto.ReviewCreateResponseDto;
 import com.sparta.realtomatoapp.review.dto.ReviewDeleteResponseDto;
 import com.sparta.realtomatoapp.review.dto.ReviewListResponseDto;
 import com.sparta.realtomatoapp.review.service.ReviewService;
 import com.sparta.realtomatoapp.security.Authorized;
+import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,23 +30,27 @@ public class ReviewController {
     @PostMapping("/order/{orderId}/review")
     public ResponseEntity<DataResponseDto<ReviewCreateResponseDto>> creatReview(
             @PathVariable(name = "orderId") Long orderId,
-            @RequestBody ReviewCreateRequestDto requestDto
+            @RequestBody ReviewCreateRequestDto requestDto,
+            @LoginUser AuthUser authUser
     ) {
         ReviewCreateResponseDto reviewData = reviewService.createReview(orderId,requestDto);
         return ResponseEntity.ok(new DataResponseDto<>("리뷰 생성 성공", List.of(reviewData)));
     }
 
+    //사용자- 특정가게 리뷰 전체 조회
+    @Authorized(UserRole.USER)
     @GetMapping("/store/{storeId}/reviews")
-    //리뷰 전체 조회
-    public ResponseEntity<DataResponseDto<ReviewListResponseDto>> getAllReviews() {
-        List<ReviewListResponseDto> allReviews = reviewService.getAllReviews();
-        return ResponseEntity.ok(new DataResponseDto<>("리뷰 다건 조회 성공", List.of()));
+    public ResponseEntity<DataResponseDto<ReviewListResponseDto>> getAllReviews(@LoginUser AuthUser authUser,@PathVariable(name = "storeId") Long storeId) {
+        List<ReviewListResponseDto> allReviews = reviewService.getAllReviews(authUser, storeId);
+        return ResponseEntity.ok(new DataResponseDto<>("리뷰 다건 조회 성공", allReviews));
     }
 
-    @DeleteMapping("/order/{orderId}/review/{reviewId}")
     //리뷰 삭제
-    public ResponseEntity<BaseResponseDto> deleteReview(Long reviewId) {
-        ReviewDeleteResponseDto reviewData = reviewService.deleteReview(reviewId);
-        return null;
+    @Authorized(UserRole.USER)
+    @DeleteMapping("/order/{orderId}/review/{reviewId}")
+    public ResponseEntity<BaseResponseDto> deleteReview(
+            @PathVariable(name = "orderId") Long orderId,
+            @PathVariable(name = "reviewId") Long reviewId) {
+        return ResponseEntity.ok(reviewService.deleteReview(reviewId));
     }
 }
