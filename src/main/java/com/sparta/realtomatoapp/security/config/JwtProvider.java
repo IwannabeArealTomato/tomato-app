@@ -1,8 +1,5 @@
 package com.sparta.realtomatoapp.security.config;
 
-import com.sparta.realtomatoapp.user.dto.AuthUser;
-import com.sparta.realtomatoapp.user.entity.UserRole;
-import com.sparta.realtomatoapp.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -78,5 +75,4 @@ public class JwtProvider {
                 .userId(userId)
                 .build();
     }
-
 }

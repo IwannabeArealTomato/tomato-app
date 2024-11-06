@@ -64,6 +64,7 @@ public class AuthController {
                 .data(Collections.singletonList(userResponseDto))
                 .build());
     }
+
     @PostMapping("/refresh")
     public ResponseEntity<BaseResponseDto> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
         log.info("AuthController.refreshAccessToken");
