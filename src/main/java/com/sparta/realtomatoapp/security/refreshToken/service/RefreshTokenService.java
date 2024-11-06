@@ -18,10 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private final JwtConfig jwtConfig; // JwtConfig 주입
-
+    private final JwtConfig jwtConfig;
     private static final long EXPIRING_SOON_THRESHOLD = 24 * 60 * 60 * 1000; // 1일 (밀리초 단위)
-
     private final RefreshTokenRepository refreshTokenRepository;
 
     // Refresh Token 생성 및 데이터베이스에 저장
@@ -29,7 +27,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(token)
                 .userEmail(userEmail)
-                .expiryDate(Instant.now().plusMillis(1440 * 60 * 1000)) // 토큰 만료 시간 설정
+                .expiryDate(Instant.now().plusMillis(jwtConfig.getJwtRefreshTokenExpireTime() * 60 * 1000))
                 .build();
 
         refreshTokenRepository.save(refreshToken);
@@ -51,6 +49,7 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByUserEmail(userEmail);
     }
 
+    // 만료 임박 시 새 Refresh Token 발급 필요 여부 확인
     public boolean isTokenExpiringSoon(String refreshToken) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getJwtRefreshTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
@@ -61,7 +60,6 @@ public class RefreshTokenService {
         Date expirationDate = claims.getExpiration();
         long timeRemaining = expirationDate.getTime() - System.currentTimeMillis();
 
-        // 토큰의 남은 유효 시간이 임계값보다 적을 경우 true 반환
         return timeRemaining < EXPIRING_SOON_THRESHOLD;
     }
 }

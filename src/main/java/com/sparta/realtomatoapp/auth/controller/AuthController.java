@@ -35,7 +35,7 @@ public class AuthController {
             String refreshToken = tokens.get("refreshToken");
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + accessToken);
+            headers.add("Authorization", accessToken);
             headers.add("RefreshToken", refreshToken);
 
             log.info("Login successful for email: {}", request.getEmail());
@@ -82,7 +82,6 @@ public class AuthController {
         responseBody.put("message", "Access Token 재발급 성공");
         responseBody.put("accessToken", newAccessToken);
 
-        // 만약 리프레쉬 토큰이 갱신된 경우, 바디에 포함
         if (newRefreshToken != null) {
             responseBody.put("refreshToken", newRefreshToken);
         }

@@ -25,20 +25,20 @@ public class JwtProvider {
         this.refreshTokenKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
-    public String generateToken(String username) {
-        return createToken(username, jwtConfig.getJwtAccessTokenExpireTime(), accessTokenKey);
+    public String generateToken(String email) {
+        return createToken(email, jwtConfig.getJwtAccessTokenExpireTime(), accessTokenKey);
     }
 
-    public String generateRefreshToken(String username) {
-        return createToken(username, jwtConfig.getJwtRefreshTokenExpireTime(), refreshTokenKey);
+    public String generateRefreshToken(String email) {
+        return createToken(email, jwtConfig.getJwtRefreshTokenExpireTime(), refreshTokenKey);
     }
 
-    private String createToken(String username, long expireTime, Key key) {
+    private String createToken(String email, long expireTime, Key key) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expireTime * 60 * 1000);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key) // 자동 생성된 키 사용
