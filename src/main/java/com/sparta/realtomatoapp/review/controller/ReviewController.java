@@ -24,7 +24,7 @@ public class ReviewController {
 
     // TODO : 리뷰 CRUD
     //리뷰 생성
-    @Authorized(UserRole.ADMIN)
+    @Authorized(UserRole.USER)
     @PostMapping("/order/{orderId}/review")
     public ResponseEntity<DataResponseDto<ReviewCreateResponseDto>> creatReview(
             @PathVariable(name = "orderId") Long orderId,
