@@ -1,11 +1,14 @@
 package com.sparta.realtomatoapp.auth.controller;
 
+import com.sparta.realtomatoapp.auth.dto.LoginTokenResponseDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
 import com.sparta.realtomatoapp.common.dto.BaseResponseDto;
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,33 +26,33 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponseDto> login(@RequestBody LoginRequestDto request) {
-        log.info("Attempting login for email: {}", request.getEmail());
+    public ResponseEntity<BaseResponseDto> login(@RequestBody LoginRequestDto request, HttpServletResponse response) {
+        log.info("AuthController.login");
 
         try {
-            Map<String, String> tokens = userService.loginUserWithTokens(request);
-            String accessToken = tokens.get("accessToken");
-            String refreshToken = tokens.get("refreshToken");
+            LoginTokenResponseDto tokens = userService.loginUser(request);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + accessToken);
-            headers.add("RefreshToken", refreshToken);
-
-            log.info("Login successful for email: {}", request.getEmail());
+            // 헤더와 쿠키에 엑세스토큰 과 리프레시 토큰을 저장
+            jwtProvider.addAccessTokenToHeader(response, tokens.getAccessToken());
+            jwtProvider.addRefreshTokenToCookie(response, tokens.getRefreshToken());
 
             return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(BaseResponseDto.baseResponseBuilder()
-                            .message("로그인 성공")
-                            .build());
+                    .body(
+                            BaseResponseDto.baseResponseBuilder()
+                                    .message("로그인 성공")
+                                    .build()
+                    );
+
         } catch (IllegalArgumentException e) {
-            log.error("Login failed for email: {} - Reason: {}", request.getEmail(), e.getMessage());
             return ResponseEntity.badRequest()
-                    .body(BaseResponseDto.baseResponseBuilder()
-                            .message("로그인 실패: " + e.getMessage())
-                            .build());
+                    .body(
+                            BaseResponseDto.baseResponseBuilder()
+                                    .message("로그인 실패" + e.getMessage())
+                                    .build()
+                    );
         }
     }
 
@@ -65,7 +68,7 @@ public class AuthController {
                 .build());
     }
 
-    @PostMapping("/refresh")
+    /*@PostMapping("/refresh")
     public ResponseEntity<BaseResponseDto> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
         log.info("AuthController.refreshAccessToken");
 
@@ -86,9 +89,9 @@ public class AuthController {
                 .body(BaseResponseDto.baseResponseBuilder()
                         .message("Access Token 재발급 성공")
                         .build());
-    }
+    }*/
 
-    @PostMapping("/logout")
+    /*@PostMapping("/logout")
     public ResponseEntity<BaseResponseDto> logout(@RequestHeader("Refresh-Token") String refreshToken) {
         log.info("AuthController.logout");
 
@@ -97,5 +100,5 @@ public class AuthController {
         return ResponseEntity.ok(BaseResponseDto.baseResponseBuilder()
                 .message("로그아웃 성공")
                 .build());
-    }
+    }*/
 }
