@@ -5,7 +5,6 @@ import com.sparta.realtomatoapp.common.dto.DataResponseDto;
 import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.review.dto.ReviewCreateRequestDto;
 import com.sparta.realtomatoapp.review.dto.ReviewCreateResponseDto;
-import com.sparta.realtomatoapp.review.dto.ReviewDeleteResponseDto;
 import com.sparta.realtomatoapp.review.dto.ReviewListResponseDto;
 import com.sparta.realtomatoapp.review.service.ReviewService;
 import com.sparta.realtomatoapp.security.Authorized;
