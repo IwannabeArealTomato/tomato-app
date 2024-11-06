@@ -45,7 +45,7 @@ public class OrderController {
         return ResponseEntity.ok(new DataResponseDto<>("주문 다건 조회", responseDto));
     }
 
-    @Authorized(UserRole.USER)
+    @Authorized(UserRole.STOREOWNER)
     @DeleteMapping("/{orderId}")
     public ResponseEntity<BaseResponseDto> deleteOrder(@PathVariable Long orderId){
         orderService.deleteOrder(orderId);
