@@ -3,7 +3,9 @@ package com.sparta.realtomatoapp.store.service;
 import com.sparta.realtomatoapp.store.dto.*;
 import com.sparta.realtomatoapp.store.entity.Store;
 import com.sparta.realtomatoapp.store.repository.StoreRepository;
+import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.entity.User;
+import com.sparta.realtomatoapp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,27 +18,34 @@ import java.util.stream.Collectors;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public StoreCreateResponseDto createStore(StoreCreateRequestDto requestDto) {
+    public StoreCreateResponseDto createStore(AuthUser authUser,StoreCreateRequestDto requestDto) {
+
+        // User 엔티티 조회
+        User user = userRepository.findById(authUser.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+
+
         Store store = Store.builder()
-                .user(User.builder().userId(1L).build())
                 .storeName(requestDto.getStoreName())
                 .openTime(requestDto.getOpenTime())
                 .closeTime(requestDto.getCloseTime())
                 .minPrice(requestDto.getMinPrice())
                 .status(requestDto.getStatus())
+                .user(user)
                 .build();
-        Store savedStore = storeRepository.save(store);
+        storeRepository.save(store);
 
-        return new StoreCreateResponseDto(
-                savedStore.getStoreId(),
-                savedStore.getStoreName(),
-                savedStore.getOpenTime(),
-                savedStore.getCloseTime(),
-                savedStore.getMinPrice(),
-                savedStore.getStatus()
-        );
+        return new StoreCreateResponseDto().builder()
+                .storeId(store.getStoreId())
+                .storeName(store.getStoreName())
+                .openTime(store.getOpenTime())
+                .closeTime(store.getCloseTime())
+                .minPrice(store.getMinPrice())
+                .status(store.getStatus())
+                .build();
     }
 
     public StoreResponseDto getStoreById(Long storeId) {
