@@ -3,6 +3,7 @@ package com.sparta.realtomatoapp.user.entity;
 import com.sparta.realtomatoapp.auth.entity.OauthUser;
 import com.sparta.realtomatoapp.common.entity.ModifiedAuditingEntity;
 import com.sparta.realtomatoapp.order.entity.Order;
+import com.sparta.realtomatoapp.security.refreshToken.entity.RefreshToken;
 import com.sparta.realtomatoapp.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
@@ -54,4 +55,7 @@ public class User extends ModifiedAuditingEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OauthUser> oauthUsers;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private RefreshToken refreshTokens;
 }

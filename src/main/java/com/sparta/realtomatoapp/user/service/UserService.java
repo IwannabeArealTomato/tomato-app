@@ -8,6 +8,7 @@ import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.security.exception.CustomException;
 import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
 import com.sparta.realtomatoapp.security.refreshToken.entity.RefreshToken;
+import com.sparta.realtomatoapp.security.refreshToken.repository.RefreshTokenRepository;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
