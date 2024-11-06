@@ -1,21 +1,25 @@
 package com.sparta.realtomatoapp.user.service;
 
 import com.sparta.realtomatoapp.auth.dto.LoginRequestDto;
+import com.sparta.realtomatoapp.auth.dto.LoginTokenResponseDto;
 import com.sparta.realtomatoapp.auth.dto.UserRegistrationRequestDto;
 import com.sparta.realtomatoapp.auth.dto.UserResponseDto;
 import com.sparta.realtomatoapp.security.config.JwtProvider;
 import com.sparta.realtomatoapp.security.exception.CustomException;
 import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
+import com.sparta.realtomatoapp.security.refreshToken.entity.RefreshToken;
+import com.sparta.realtomatoapp.security.refreshToken.repository.RefreshTokenRepository;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
-import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
+import com.sparta.realtomatoapp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,17 +32,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoderUtil passwordEncoderUtil;
     private final JwtProvider jwtProvider; // JWT 토큰 생성을 위해 필요
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
-    }
-
-    public String loginUser(LoginRequestDto request) {
+    @Transactional
+    public LoginTokenResponseDto loginUser(LoginRequestDto request) {
         User user = findUserByEmail(request.getEmail()).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -53,7 +54,30 @@ public class UserService {
                 .role(user.getRole())
                 .build();
 
-        return jwtProvider.createJwtToken(authUser);
+        String accessToken = jwtProvider.createJwtToken(authUser);
+        // JWT 리프레시 토큰 생성 후 쿠키에 저장
+        String refreshToken = jwtProvider.createRefreshToken(authUser);
+
+        // DB에 리프레시 토큰 저장
+        RefreshToken refreshEntity = RefreshToken.builder()
+                .tokenValue(refreshToken)
+                .user(user)
+                .build();
+
+        Optional<RefreshToken> existingTokenValue = refreshTokenRepository.findByUser(user);
+        if (existingTokenValue.isEmpty()) {
+            // 발급 해준 토큰이 없을 시 -> 새로 발급
+            refreshTokenRepository.save(refreshEntity);
+        } else {
+            // 발급 해준 토큰이 있을 시 -> 재발급(변경)
+            existingTokenValue.get().updateToken(refreshToken);
+            refreshTokenRepository.save(existingTokenValue.get());
+        }
+
+        return LoginTokenResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public UserResponseDto registerUser(UserRegistrationRequestDto request) {
@@ -79,6 +103,12 @@ public class UserService {
         userRepository.save(user);
 
         return convertToDto(user);
+    }
+
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     public List<UserResponseDto> getAllUsers(int page, int size) {
