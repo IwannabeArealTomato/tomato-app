@@ -47,7 +47,6 @@ public class JwtProvider {
     }
 
     // 토큰으로 부터 정보 가져오기
-    // todo: 혹시 불필요한 경우 지우는 것 고려
     public AuthUser getCurrentRequestAuthInfo(String jwtAccessToken) {
         SecretKey secureAccessSecret = Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes());
         Jws<Claims> claimsJws = Jwts.parser().verifyWith(secureAccessSecret).build()
@@ -55,12 +54,12 @@ public class JwtProvider {
 
         Claims payload = claimsJws.getPayload();
         String email = payload.getSubject();
-        UserRole role = payload.get("role", UserRole.class);
+        String role = payload.get("role", String.class);
         Long userId = payload.get("userId", Long.class);
 
         return AuthUser.builder()
                 .email(email)
-                .role(role)
+                .role(UserRole.valueOf(role))
                 .userId(userId)
                 .build();
     }
