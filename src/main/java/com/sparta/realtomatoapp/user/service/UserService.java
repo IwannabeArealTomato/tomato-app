@@ -9,7 +9,6 @@ import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
-import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
@@ -34,12 +33,17 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
     public String loginUser(LoginRequestDto request) {
         User user = findUserByEmail(request.getEmail()).orElseThrow(() ->
-                new IllegalArgumentException("이메일이 존재하지 않습니다."));
+                new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (!passwordEncoderUtil.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
         // JWT 토큰 생성
@@ -69,18 +73,10 @@ public class UserService {
                 .userName(request.getUserName())
                 .password(encodedPassword)
                 .role(userRole)
-                .status(UserStatus.ACTIVE) // 활성화 상태
                 .address(request.getAddress())
                 .build();
 
         userRepository.save(user);
-
-        return convertToDto(user);
-    }
-
-    public UserResponseDto getUserById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return convertToDto(user);
     }
@@ -101,9 +97,8 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public User updateUser(Long userId, UserUpdateRequestDto request) {
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
+    public UserResponseDto updateUser(Long userId, UserUpdateRequestDto request) {
+        User user = getUserById(userId);
 
         if (!passwordEncoderUtil.matches(request.getPastPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
@@ -119,7 +114,17 @@ public class UserService {
             user.setAddress(request.getAddress());
         }
 
-        return userRepository.save(user);
+        return convertToDto(userRepository.save(user));
+    }
+
+    public void deactivateUser(Long userId, String password) {
+        User user = getUserById(userId);
+
+        if (!passwordEncoderUtil.matches(password, user.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        userRepository.deleteById(userId);
     }
 
     public UserResponseDto convertToDto(User user) {

@@ -9,7 +9,6 @@ import com.sparta.realtomatoapp.auth.repository.OauthUserRepository;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
-import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -144,7 +143,6 @@ public class GoogleOauthService {
                 .userName(oauthUserInfo.getNickname())
                 .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .role(UserRole.USER) // 최초 google 로그인 시 계정 일반 유저로 설정
-                .status(UserStatus.ACTIVE)
                 .address("주소를 변경해주세요.")
                 .build();
 

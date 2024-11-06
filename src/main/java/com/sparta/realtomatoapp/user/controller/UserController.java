@@ -5,6 +5,7 @@ import com.sparta.realtomatoapp.common.dto.BaseResponseDto;
 import com.sparta.realtomatoapp.common.dto.DataResponseDto;
 import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
+import com.sparta.realtomatoapp.user.dto.UserDeactivateRequestDto;
 import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
@@ -49,7 +50,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<DataResponseDto> getUserInfo(@PathVariable Long userId) {
 
-        UserResponseDto userResponse = userService.getUserById(userId);
+        User userResponse = userService.getUserById(userId);
         return ResponseEntity.ok()
                 .body(
                         DataResponseDto.dataResponseBuilder()
@@ -76,12 +77,13 @@ public class UserController {
                 );
     }
 
+    // 회원 정보 수정
     @PutMapping
     public ResponseEntity<DataResponseDto> updateUser(
             @LoginUser AuthUser authUser,
             @RequestBody UserUpdateRequestDto request) {
 
-        User updatedUser = userService.updateUser(authUser.getUserId(), request);
+        UserResponseDto updatedUser = userService.updateUser(authUser.getUserId(), request);
 
         return ResponseEntity.ok()
                 .body(
@@ -92,5 +94,16 @@ public class UserController {
                 );
     }
 
+    // 회원 탈퇴
+    @DeleteMapping
+    public ResponseEntity<BaseResponseDto> deactivateUser(@LoginUser AuthUser authUser, @RequestBody UserDeactivateRequestDto request) {
+        userService.deactivateUser(authUser.getUserId(), request.getPassword());
 
+        return ResponseEntity.ok()
+                .body(
+                        BaseResponseDto.baseResponseBuilder()
+                                .message("탈퇴 완료")
+                                .build()
+                );
+    }
 }

@@ -2,6 +2,7 @@ package com.sparta.realtomatoapp.order.entity;
 
 import com.sparta.realtomatoapp.common.entity.BaseAuditingEntity;
 import com.sparta.realtomatoapp.menu.entity.Menu;
+import com.sparta.realtomatoapp.review.entity.Review;
 import com.sparta.realtomatoapp.store.entity.Store;
 import com.sparta.realtomatoapp.user.entity.User;
 import jakarta.persistence.*;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -40,6 +43,9 @@ public class Order extends BaseAuditingEntity {
     @ManyToOne
     @JoinColumn(name = "menuId")
     private Menu menu;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
 
     public void updateOrder(OrderStatus status) {
         this.status = status;

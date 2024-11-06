@@ -1,11 +1,13 @@
 package com.sparta.realtomatoapp.store.entity;
 
 import com.sparta.realtomatoapp.common.entity.BaseAuditingEntity;
+import com.sparta.realtomatoapp.menu.entity.Menu;
 import com.sparta.realtomatoapp.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -38,4 +40,7 @@ public class Store extends BaseAuditingEntity {
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menus;
 }
