@@ -83,7 +83,7 @@ public class UserController {
             @LoginUser AuthUser authUser,
             @RequestBody UserUpdateRequestDto request) {
 
-        User updatedUser = userService.updateUser(authUser.getUserId(), request);
+        UserResponseDto updatedUser = userService.updateUser(authUser.getUserId(), request);
 
         return ResponseEntity.ok()
                 .body(
