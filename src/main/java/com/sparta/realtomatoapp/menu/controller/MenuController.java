@@ -23,26 +23,26 @@ public class MenuController {
     @PostMapping("/menu")
     public ResponseEntity<DataResponseDto<MenuCreateResponseDto>> createMenu(@RequestBody MenuCreateRequestDto requestDto) {
         MenuCreateResponseDto menuData = menuService.createMenu(requestDto);
-        return ResponseEntity.ok(new DataResponseDto<>("가게 생성 성공", List.of(menuData)));
+        return ResponseEntity.ok(new DataResponseDto<>("메뉴 생성 성공", List.of(menuData)));
     }
 
     @GetMapping("/menu/{menuId}")
     public ResponseEntity<DataResponseDto<MenuNameResponseDto>> getMenu(@PathVariable Long menuId) {
         MenuNameResponseDto menuData = menuService.getMenuById(menuId);
-        return ResponseEntity.ok(new DataResponseDto<>("가게 단건 조회 성공", List.of(menuData)));
+        return ResponseEntity.ok(new DataResponseDto<>("메뉴 단건 조회 성공", List.of(menuData)));
     }
 
     @GetMapping("/menu")
     public ResponseEntity<DataResponseDto<MenuNameResponseDto>> getAllStores() {
         List<MenuNameResponseDto> MenuDataList = menuService.getAllMenus();
-        return ResponseEntity.ok(new DataResponseDto<>("가게 다건 조회 성공", MenuDataList));
+        return ResponseEntity.ok(new DataResponseDto<>("메뉴 다건 조회 성공", MenuDataList));
     }
 
     @Authorized(UserRole.STOREOWNER)
     @PutMapping("/menu/{menuId}")
     public ResponseEntity<DataResponseDto<MenuUpdateResponseDto>> updateMenu(@PathVariable Long menuId, @RequestBody MenuUpdateRequestDto requestDto) {
         MenuUpdateResponseDto menuData = menuService.updateMenu(menuId, requestDto);
-        return ResponseEntity.ok(new DataResponseDto<>("가게 정보 수정 성공", List.of(menuData)));
+        return ResponseEntity.ok(new DataResponseDto<>("메뉴 정보 수정 성공", List.of(menuData)));
     }
 
     @Authorized(UserRole.STOREOWNER)
