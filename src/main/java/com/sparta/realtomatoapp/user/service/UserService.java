@@ -9,7 +9,6 @@ import com.sparta.realtomatoapp.security.exception.eunm.ErrorCode;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.dto.UserUpdateRequestDto;
-import com.sparta.realtomatoapp.user.entity.UserStatus;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
@@ -69,7 +68,6 @@ public class UserService {
                 .userName(request.getUserName())
                 .password(encodedPassword)
                 .role(userRole)
-                .status(UserStatus.ACTIVE) // 활성화 상태
                 .address(request.getAddress())
                 .build();
 
