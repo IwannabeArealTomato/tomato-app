@@ -1,6 +1,5 @@
 package com.sparta.realtomatoapp.auth.controller.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.realtomatoapp.common.entity.LoginUser;
 import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.security.config.JwtConfig;
@@ -45,7 +44,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
             String token = header.substring(7);
 
             Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(jwtConfig.getJwtaccessTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
+                    .verifyWith(Keys.hmacShaKeyFor(jwtConfig.getJwtAccessTokenSecretKey().getBytes(StandardCharsets.UTF_8)))
                     .build()
                     .parseSignedClaims(token);
 
