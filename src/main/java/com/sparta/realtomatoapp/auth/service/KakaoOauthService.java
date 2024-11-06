@@ -3,7 +3,6 @@ package com.sparta.realtomatoapp.auth.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.realtomatoapp.auth.dto.LoginTokenResponseDto;
 import com.sparta.realtomatoapp.auth.dto.OauthLoginResponseDto;
 import com.sparta.realtomatoapp.auth.dto.OauthUserInfo;
 import com.sparta.realtomatoapp.auth.entity.OauthUser;
@@ -58,7 +57,7 @@ public class KakaoOauthService {
         );
         // 만약 이전에 카카오 OAUTH 로그인을 했던 기록이 있다면
         User savedUser;
-        if(existingOauthUser.isPresent()) {
+        if (existingOauthUser.isPresent()) {
             savedUser = existingOauthUser.get().getUser();
         } else {
             // 첫 로그인 인데, 등록된 이메일이 없다면 회원 등록
@@ -91,13 +90,15 @@ public class KakaoOauthService {
                 .user(savedUser)
                 .build();
 
-        RefreshToken existingRefreshToken = refreshTokenRepository.findByUser(savedUser).orElseGet(() ->
-                refreshTokenRepository.save(refreshEntity));
-
-        // 발급 해준 토큰이 있을 시 -> 변경
-        existingRefreshToken.updateToken(jwtRefreshToken);
-        refreshTokenRepository.save(existingRefreshToken);
-
+        Optional<RefreshToken> existingTokenValue = refreshTokenRepository.findByUser(savedUser);
+        if (existingTokenValue.isEmpty()) {
+            // 발급 해준 토큰이 없을 시 -> 새로 발급
+            refreshTokenRepository.save(refreshEntity);
+        } else {
+            // 발급 해준 토큰이 있을 시 -> 재발급(변경)
+            existingTokenValue.get().updateToken(jwtRefreshToken);
+            refreshTokenRepository.save(existingTokenValue.get());
+        }
 
         return OauthLoginResponseDto.builder()
                 .accessToken(jwtAccessToken)

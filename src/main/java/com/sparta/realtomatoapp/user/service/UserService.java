@@ -63,13 +63,16 @@ public class UserService {
                 .tokenValue(refreshToken)
                 .user(user)
                 .build();
-        // 리프레시 토큰이 없을 시 -> 새로 추가
-        RefreshToken existingRefreshToken = refreshTokenRepository.findByUser(user).orElseGet(() ->
-                refreshTokenRepository.save(refreshEntity));
 
-        // 발급 해준 토큰이 있을 시 -> 변경
-        existingRefreshToken.updateToken(refreshToken);
-        refreshTokenRepository.save(existingRefreshToken);
+        Optional<RefreshToken> existingTokenValue = refreshTokenRepository.findByUser(user);
+        if (existingTokenValue.isEmpty()) {
+            // 발급 해준 토큰이 없을 시 -> 새로 발급
+            refreshTokenRepository.save(refreshEntity);
+        } else {
+            // 발급 해준 토큰이 있을 시 -> 재발급(변경)
+            existingTokenValue.get().updateToken(refreshToken);
+            refreshTokenRepository.save(existingTokenValue.get());
+        }
 
         return LoginTokenResponseDto.builder()
                 .accessToken(accessToken)
