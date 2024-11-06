@@ -3,11 +3,17 @@ package com.sparta.realtomatoapp.auth.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.realtomatoapp.auth.dto.LoginTokenResponseDto;
+import com.sparta.realtomatoapp.auth.dto.OauthLoginResponseDto;
 import com.sparta.realtomatoapp.auth.dto.OauthUserInfo;
 import com.sparta.realtomatoapp.auth.entity.OauthUser;
 import com.sparta.realtomatoapp.auth.entity.Provider;
 import com.sparta.realtomatoapp.auth.repository.OauthUserRepository;
+import com.sparta.realtomatoapp.security.config.JwtProvider;
+import com.sparta.realtomatoapp.security.refreshToken.entity.RefreshToken;
+import com.sparta.realtomatoapp.security.refreshToken.repository.RefreshTokenRepository;
 import com.sparta.realtomatoapp.security.util.PasswordEncoderUtil;
+import com.sparta.realtomatoapp.user.dto.AuthUser;
 import com.sparta.realtomatoapp.user.entity.User;
 import com.sparta.realtomatoapp.user.entity.UserRole;
 import com.sparta.realtomatoapp.user.repository.UserRepository;
@@ -33,7 +39,8 @@ public class KakaoOauthService {
     private final PasswordEncoderUtil passwordEncoder;
     private final UserRepository userRepository;
     private final OauthUserRepository oauthUserRepository;
-
+    private final JwtProvider jwtProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Value("${kakao.client.id}")
@@ -42,30 +49,60 @@ public class KakaoOauthService {
     private String redirectUri;
 
 
-    public String kakaoLogin(String code) throws JsonProcessingException {
+    public OauthLoginResponseDto kakaoLogin(String code) throws JsonProcessingException {
         String accessToken = getAccessToken(code);
         OauthUserInfo oauthUserInfo = getKakaoUserInfo(accessToken);
         Optional<OauthUser> existingOauthUser = oauthUserRepository.findByOauthIdAndProvider(
                 oauthUserInfo.getOauthId(),
                 oauthUserInfo.getProvider()
         );
-        // 만약 이전에 카카오 OAUTH 로그인을 했던 기록이 있다면, Early Return
-        if(existingOauthUser.isPresent()) return accessToken;
+        // 만약 이전에 카카오 OAUTH 로그인을 했던 기록이 있다면
+        User savedUser;
+        if(existingOauthUser.isPresent()) {
+            savedUser = existingOauthUser.get().getUser();
+        } else {
+            // 첫 로그인 인데, 등록된 이메일이 없다면 회원 등록
+            savedUser = userRepository.findByEmail(oauthUserInfo.getEmail()).orElseGet(
+                    () -> registerNewKakaoUser(oauthUserInfo)
+            );
 
-        // 첫 로그인 인데, 등록된 이메일이 없다면 회원 등록
-        User user = userRepository.findByEmail(oauthUserInfo.getEmail()).orElseGet(
-                () -> registerNewKakaoUser(oauthUserInfo)
-        );
+            // 카카오 oauth 계정 등록
+            OauthUser kakaoUser = OauthUser.builder()
+                    .oauthId(oauthUserInfo.getOauthId())
+                    .provider(oauthUserInfo.getProvider())
+                    .user(savedUser)
+                    .build();
+            oauthUserRepository.save(kakaoUser);
+        }
 
-        // 카카오 oauth 계정 등록
-        OauthUser kakaoUser = OauthUser.builder()
-                .oauthId(oauthUserInfo.getOauthId())
-                .provider(oauthUserInfo.getProvider())
-                .user(user)
+        // JWT 토큰 생성을 위한 AuthUser 객체 생성
+        AuthUser authUser = AuthUser.builder()
+                .userId(savedUser.getUserId())
+                .email(savedUser.getEmail())
+                .role(savedUser.getRole())
                 .build();
-        oauthUserRepository.save(kakaoUser);
 
-        return accessToken;
+        String jwtAccessToken = jwtProvider.createJwtToken(authUser);
+        String jwtRefreshToken = jwtProvider.createRefreshToken(authUser);
+
+        // DB에 리프레시 토큰 저장
+        RefreshToken refreshEntity = RefreshToken.builder()
+                .tokenValue(jwtRefreshToken)
+                .user(savedUser)
+                .build();
+
+        RefreshToken existingRefreshToken = refreshTokenRepository.findByUser(savedUser).orElseGet(() ->
+                refreshTokenRepository.save(refreshEntity));
+
+        // 발급 해준 토큰이 있을 시 -> 변경
+        existingRefreshToken.updateToken(jwtRefreshToken);
+        refreshTokenRepository.save(existingRefreshToken);
+
+
+        return OauthLoginResponseDto.builder()
+                .accessToken(jwtAccessToken)
+                .refreshToken(jwtRefreshToken)
+                .build();
     }
 
     private User registerNewKakaoUser(OauthUserInfo oauthUserInfo) {
