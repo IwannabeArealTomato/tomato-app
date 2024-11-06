@@ -7,7 +7,13 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AuthUser {
-    private Long userId;
-    private String email;
-    private UserRole role;
+    private final Long userId;
+    private final String email;
+    private final UserRole role;
+
+    public AuthUser(Long userId, String email, UserRole role) {
+        this.userId = userId;
+        this.email = email;
+        this.role = role;
+    }
 }

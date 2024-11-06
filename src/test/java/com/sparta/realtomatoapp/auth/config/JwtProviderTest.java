@@ -19,7 +19,7 @@ class JwtProviderTest {
     void test_jwtProvider() {
         //given
         String mail = "test@test.com";
-        UserRole role = UserRole.GUEST;
+        UserRole role = UserRole.ADMIN;
 
         AuthUser authUser = AuthUser.builder()
                 .email(mail)

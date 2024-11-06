@@ -1,16 +1,15 @@
 package com.sparta.realtomatoapp.store.dto;
 
 import com.sparta.realtomatoapp.store.entity.StoreStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
 
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreCreateResponseDto {
+public class StoreCreateResponseDto{
     private Long storeId;
     private String storeName;
     private LocalTime openTime;
