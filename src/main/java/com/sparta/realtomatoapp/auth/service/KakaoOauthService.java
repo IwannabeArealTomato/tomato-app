@@ -51,6 +51,7 @@ public class KakaoOauthService {
     public OauthLoginResponseDto kakaoLogin(String code) throws JsonProcessingException {
         String accessToken = getAccessToken(code);
         OauthUserInfo oauthUserInfo = getKakaoUserInfo(accessToken);
+        //---------------------------------------------------
         Optional<OauthUser> existingOauthUser = oauthUserRepository.findByOauthIdAndProvider(
                 oauthUserInfo.getOauthId(),
                 oauthUserInfo.getProvider()
