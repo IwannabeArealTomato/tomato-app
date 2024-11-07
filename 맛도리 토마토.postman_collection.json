@@ -1,0 +1,1018 @@
+{
+	"info": {
+		"_postman_id": "daf21554-00d9-479e-9696-00dfab26f19d",
+		"name": "맛도리 토마토",
+		"description": "### **토마토 배달 어플리케이션?**\n\n**→ 우리들이 자주 접하는 바로 그 배달 주문 어플리케이션입니다.  \n평소 사용하던 경험을 바탕으로 우리는 최고의 토마토를 우유보다 빠르고 저렴하게 배달해 드립니다!**\n\n<img src=\"https://content.pstmn.io/3c44b15c-5c33-4bcd-ad5a-0c18d1b95ec1/7Iqk7YGs66aw7IO3IDIwMjQtMTAtMzAgMTYzMTQ3ICgyKS5wbmc=\" alt=\"\">",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38585809"
+	},
+	"item": [
+		{
+			"name": "로그인 화면",
+			"item": [
+				{
+					"name": "프로필 수정",
+					"item": [
+						{
+							"name": "유저 정보 수정",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <JWT_Token>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \r\n    \"userName\": \"12345\", \r\n    \"address\": \"12345\", \r\n    \"pastPassword\": \"12345\", \r\n    \"newPassword\": \"1234\" \r\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "유저 삭제",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <JWT_Token>",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/api/user/{{userId}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"user",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "유저 다건 조회",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{AccessToken}}"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/api/user",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "유저 단건 조회",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/api/user/{{userId}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"user",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "사용자는 자신의 프로필 정보를 수정하거나 탈퇴할 수 있습니다. 프로필 수정 시 이름, 주소, 비밀번호를 업데이트할 수 있으며, 탈퇴 시에는 비밀번호 확인 절차가 필요합니다."
+				},
+				{
+					"name": "카카오 로그인",
+					"item": [
+						{
+							"name": "카카오 로그인",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/auth/kakao/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"kakao",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "구글 로그인",
+					"item": [
+						{
+							"name": "구글 로그인",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/auth/google/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"google",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "회원가입",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"12345\", \r\n    \"email\": \"12345\", \r\n    \"password\": \"12345\", \r\n    \"userRole\": \"STOREOWNER\", \r\n    \"address\": \"12345\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "로그인",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var authorization = pm.response.headers.get('Authorization');\r",
+									"pm.environment.set('Authorization', authorization);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"12345\",\r\n    \"password\": \"12345\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "토큰 갱신",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var authorization = pm.response.headers.get('Authorization');\r",
+									"pm.environment.set('Authorization', authorization);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3aGxzbHMzMzc3QGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoyLCJleHAiOjE3MzA5NDUwMjgsImlhdCI6MTczMDk0NDQyOH0.CjsB_9Y5pwzvmGKxvkCXmvDKrYE2GSPfkcf0V7VdzFo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/refresh-token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "사용자는 이메일과 비밀번호를 입력하여 로그인할 수 있습니다. 성공적인 로그인 시, 액세스 토큰과 리프레시 토큰을 받아 API 요청 시 인증에 사용할 수 있습니다. 회원가입 및 토큰 갱신 기능도 포함되어 있습니다."
+		},
+		{
+			"name": "가게 관련 API",
+			"item": [
+				{
+					"name": "가게 생성",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NSIsInJvbGUiOiJTVE9SRU9XTkVSIiwidXNlcklkIjoyLCJleHAiOjE3MzA5NDYwNzgsImlhdCI6MTczMDk0NTQ3OH0.YDeFqvFyoFuAmlRSB0z1iR-8w558xAqLDMYcabNamn4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"storeName\": \"123245\",\r\n  \"openTime\": \"12:34:00\",\r\n  \"closeTime\": \"12:44:00\",\r\n  \"minPrice\": 160000,\r\n  \"status\": \"OPEN\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/store",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "가게 단건 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/store/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "가게 정보 업데이트",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Authorization}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"storeName\": \"수정할 가게이름\", \r\n    \"openTime\": \"09:00\", \r\n    \"closeTime\": \"22:00\", \r\n    \"minPrice\": \"12000\" \r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/store/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "가게 폐업",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/store/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "가게 다건 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/store",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "사장님은 가게를 등록, 수정 및 폐업할 수 있으며, 고객은 가게 목록을 검색하거나 특정 가게의 상세 정보를 조회할 수 있습니다. 가게 폐업 시 상태가 변경되어 조회되지 않습니다."
+		},
+		{
+			"name": "메뉴 관련 API",
+			"item": [
+				{
+					"name": "메뉴 생성",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Authorization}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"menuName\": \"메뉴 이름\", \r\n    \"price\": \"5000\" \r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/store/1/menu",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store",
+								"1",
+								"menu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "메뉴 삭제",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/store/{storeId}/menu/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store",
+								"{storeId}",
+								"menu",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "메뉴 수정",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{RefreshToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"menuName\": \"수정할 메뉴 이름\", \r\n    \"price\": 6000 \r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/store/1/menu/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store",
+								"1",
+								"menu",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "사장님은 자신의 가게에 메뉴를 등록, 수정, 삭제할 수 있으며, 메뉴의 상태를 삭제로 변경하여 조회 시 표시되지 않도록 할 수 있습니다. 메뉴는 단독으로 조회할 수 없으며, 가게 정보와 함께 조회됩니다."
+		},
+		{
+			"name": "주문 관련 API",
+			"item": [
+				{
+					"name": "주문 단건 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/order/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "주문 다건 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "주문 상태 변경",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"status\": \"ACCEPT\" }"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/order/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "주문 취소",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/order/{orderId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"order",
+								"{orderId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "주문 생성",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NSIsInJvbGUiOiJTVE9SRU9XTkVSIiwidXNlcklkIjoxLCJleHAiOjE3MzA5NDY2ODUsImlhdCI6MTczMDk0NjA4NX0.Pj1JAW6Soa4bRWRiMSvkUylXioo2XxVQKs42DGE3l9I",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n  \"amount\": 3,\r\n  \"userId\": 2,\r\n  \"storeId\": 1,\r\n  \"menuId\": 1\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "고객은 특정 메뉴를 선택해 주문할 수 있으며, 사장님은 주문의 상태를 확인하고 변경할 수 있습니다. 주문 상태는 대기, 승인, 거절 등의 단계로 업데이트되며, 최소 주문 금액 미만의 주문은 제한됩니다."
+		},
+		{
+			"name": "리뷰 관련 API",
+			"item": [
+				{
+					"name": "리뷰 삭제",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/order/{orderId}/review/{reviewId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"order",
+								"{orderId}",
+								"review",
+								"{reviewId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "가게 리뷰 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/store/{storeId}/reviews",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"store",
+								"{storeId}",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "리뷰 생성",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{RefreshToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <JWT_Token>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"comment\": \"리뷰내용\", \"scope\": 5 }"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/order/{orderId}/review",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"order",
+								"{orderId}",
+								"review"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "고객은 배달 완료된 주문에 대해 리뷰를 작성할 수 있으며, 별점과 함께 코멘트를 남길 수 있습니다. 리뷰는 가게에 대해 조회할 수 있으며, 단일 리뷰 조회는 불가능합니다."
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		},
+		{
+			"key": "authorizationToken",
+			"value": ""
+		}
+	]
+}
