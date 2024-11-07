@@ -138,7 +138,7 @@ public class UserService {
             user.setUserName(request.getUserName());
         }
         if (request.getNewPassword() != null) {
-            user.setPassword(request.getNewPassword());
+            user.setPassword(passwordEncoderUtil.encode(request.getNewPassword()));
         }
         if (request.getAddress() != null) {
             user.setAddress(request.getAddress());
